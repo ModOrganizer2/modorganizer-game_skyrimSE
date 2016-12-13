@@ -32,12 +32,47 @@ SkyrimSESaveGame::SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame 
     //A file time is a 64-bit value that represents the number of 100-nanosecond
     //intervals that have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC).
     //So we need to convert that to something useful
+	
+	//For some reason, the file time is off by about 6 hours.
+	//So we need to subtract those 6 hours from the filetime.
+	_ULARGE_INTEGER time;
+	time.LowPart=ftime.dwLowDateTime;
+	time.HighPart=ftime.dwHighDateTime;
+	time.QuadPart-=2.16e11;
+	ftime.dwHighDateTime=time.HighPart;
+	ftime.dwLowDateTime=time.LowPart;
+	
     SYSTEMTIME ctime;
     ::FileTimeToSystemTime(&ftime, &ctime);
 
     setCreationTime(ctime);
-    file.readImage(320, true); //format has changed 320 px(?) 8888BGRX (24bit + 8bit alpha) px format BGR (flipped)
-    file.skip<unsigned char>(); // form version
-    file.skip<unsigned long>(); // plugin info size
+	//file.skip<unsigned char>();
+	
+	unsigned long width;
+	unsigned long height;
+	file.read(width);
+	file.read(height);
+	
+	//Skip the 2 empty bytes before the image begins.
+	//This is why we aren't using the readImage(scale,alpha)
+	//variant.
+	file.skip<unsigned short>();
+	
+	file.readImage(width,height,320,true);
+	//file.readImage(320,true);
+    //file.readImage(320, 4, QImage::Format_RGBA8888, false); //format has changed 320 px(?) 8888BGRX (24bit + 8bit alpha) px format BGR (flipped)
+	//file.readImage(320, 192,0, 4, QImage::Format_RGBA8888, false);
+	
+	//Skip a single byte to get it to the right location
+	file.skip<unsigned char>(); // form version
+	
+	//Skip 2 bytes at a time until both bytes are 0
+	unsigned short testIsZero;
+	do{
+		file.read(testIsZero);
+	}while(testIsZero!=0);
+    
+    //file.skip<unsigned long>(); // plugin info size
+	//Now in correct location to read plugins.
     file.readPlugins();
 }
