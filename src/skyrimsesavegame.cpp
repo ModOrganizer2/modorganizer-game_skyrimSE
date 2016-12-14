@@ -59,20 +59,15 @@ SkyrimSESaveGame::SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame 
 	file.skip<unsigned short>();
 	
 	file.readImage(width,height,320,true);
-	//file.readImage(320,true);
-    //file.readImage(320, 4, QImage::Format_RGBA8888, false); //format has changed 320 px(?) 8888BGRX (24bit + 8bit alpha) px format BGR (flipped)
-	//file.readImage(320, 192,0, 4, QImage::Format_RGBA8888, false);
-	
-	//Skip a single byte to get it to the right location
+
+	//Skip reading the plugins altogether, due to problems with the save files.
+	m_Plugins.push_back("Not Working due to save game weirdness");
+	/* //Skip a single byte to get it to the right location
 	file.skip<unsigned char>(); // form version
-	
-	//Skip 2 bytes at a time until both bytes are 0
-	unsigned short testIsZero;
-	do{
-		file.read(testIsZero);
-	}while(testIsZero!=0);
+	//Need to skip 14 more bytes
+	file.skip<unsigned short>(7);
     
     //file.skip<unsigned long>(); // plugin info size
 	//Now in correct location to read plugins.
-    file.readPlugins();
+    file.readPlugins();// */
 }
