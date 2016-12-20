@@ -207,7 +207,7 @@ QString GameSkyrimSE::name() const
 
 QString GameSkyrimSE::author() const
 {
-    return "Archost";
+    return "Archost & ZachHaber";
 }
 
 QString GameSkyrimSE::description() const
@@ -217,7 +217,7 @@ QString GameSkyrimSE::description() const
 
 MOBase::VersionInfo GameSkyrimSE::version() const
 {
-    return VersionInfo(0, 1, 4, VersionInfo::RELEASE_ALPHA);
+    return VersionInfo(0, 1, 5, VersionInfo::RELEASE_ALPHA);
 }
 
 bool GameSkyrimSE::isActive() const
@@ -261,7 +261,7 @@ QString GameSkyrimSE::steamAPPId() const
 }
 
 QStringList GameSkyrimSE::primaryPlugins() const {
-    return{ "skyrim.esm", "update.esm", };//  };
+    return{ "skyrim.esm", "update.esm", "dawnguard.esm", "hearthfires.esm", "dragonborn.esm" };//  };
 }
 
 QStringList GameSkyrimSE::gameVariants() const
@@ -287,7 +287,7 @@ QStringList GameSkyrimSE::iniFiles() const
 
 QStringList GameSkyrimSE::DLCPlugins() const
 {
-    return{ "dawnguard.esm", "hearthfires.esm", "dragonborn.esm" };
+    return{ "" };
 }
 
 IPluginGame::LoadOrderMechanism GameSkyrimSE::loadOrderMechanism() const
@@ -297,7 +297,7 @@ IPluginGame::LoadOrderMechanism GameSkyrimSE::loadOrderMechanism() const
 
 int GameSkyrimSE::nexusModOrganizerID() const
 {
-    return 1704; //... Should be 0?
+    return 6194; //... Should be 0?
 }
 
 int GameSkyrimSE::nexusGameID() const
