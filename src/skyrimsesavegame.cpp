@@ -56,18 +56,19 @@ SkyrimSESaveGame::SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame 
 	//Skip the 2 empty bytes before the image begins.
 	//This is why we aren't using the readImage(scale,alpha)
 	//variant.
-	file.skip<unsigned short>();
+	//file.skip<unsigned short>();
+	file.read(compressionType);
 	
 	file.readImage(width,height,320,true);
 
 	//Skip reading the plugins altogether, due to problems with the save files.
-	m_Plugins.push_back("Not Working due to save game weirdness");
+	//m_Plugins.push_back("Not Working due to save game weirdness");
 	/* //Skip a single byte to get it to the right location
 	file.skip<unsigned char>(); // form version
 	//Need to skip 14 more bytes
 	file.skip<unsigned short>(7);
-    
     //file.skip<unsigned long>(); // plugin info size
 	//Now in correct location to read plugins.
     file.readPlugins();// */
+	file.readPlugins(5);
 }
