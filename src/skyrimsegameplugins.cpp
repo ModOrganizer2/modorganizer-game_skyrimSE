@@ -16,8 +16,8 @@ using MOBase::IOrganizer;
 using MOBase::SafeWriteFile;
 using MOBase::reportError;
 
-static const std::set<QString> OFFICIAL_FILES{
-    "skyrim.esm", "update.esm", "Dawnguard.esm", "HearthFires.esm", "Dragonborn.esm"};
+//static const std::set<QString> OFFICIAL_FILES{
+//    "skyrim.esm", "update.esm", "Dawnguard.esm", "HearthFires.esm", "Dragonborn.esm"};
 
 SkyrimSEGamePlugins::SkyrimSEGamePlugins(IOrganizer *organizer)
   : GamebryoGamePlugins(organizer)
@@ -44,22 +44,36 @@ void SkyrimSEGamePlugins::writePluginList(const IPluginList *pluginList,
               return pluginList->priority(lhs) < pluginList->priority(rhs);
             });
 
-
   //TODO: do not write plugins in OFFICIAL_FILES container
   for (const QString &pluginName : plugins) {
-    if (pluginList->state(pluginName) == IPluginList::STATE_ACTIVE) {
-      if (!textCodec->canEncode(pluginName)) {
-        invalidFileNames = true;
-        qCritical("invalid plugin name %s", qPrintable(pluginName));
-      }
-      else
-      { 
-              file->write("*");
-        file->write(textCodec->fromUnicode(pluginName));
+	if (!organizer()->managedGame()->primaryPlugins().contains("pluginName",Qt::CaseInsensitive)) {
+      if (pluginList->state(pluginName) == IPluginList::STATE_ACTIVE) {
+        if (!textCodec->canEncode(pluginName)) {
+          invalidFileNames = true;
+          qCritical("invalid plugin name %s", qPrintable(pluginName));
+        }
+        else
+        { 
+          file->write("*");
+          file->write(textCodec->fromUnicode(pluginName));
         
+        }
+        file->write("\r\n");
+        ++writtenCount;
       }
-      file->write("\r\n");
-      ++writtenCount;
+	  else
+	  {
+        if (!textCodec->canEncode(pluginName)) {
+          invalidFileNames = true;
+          qCritical("invalid plugin name %s", qPrintable(pluginName));
+        }
+        else
+        { 
+          file->write(textCodec->fromUnicode(pluginName));
+        }
+        file->write("\r\n");
+        ++writtenCount;
+	  }
     }
   }
 
@@ -80,8 +94,9 @@ bool SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
                                          bool useLoadOrder)
 {
   QStringList plugins = pluginList->pluginNames();
+  QStringList loadOrder = organizer()->managedGame()->primaryPlugins();
 
-  for (const QString &pluginName : OFFICIAL_FILES) {
+  for (const QString &pluginName : loadOrder) {
     if (pluginList->state(pluginName) != IPluginList::STATE_MISSING) {
       pluginList->setState(pluginName, IPluginList::STATE_ACTIVE);
     }
@@ -101,7 +116,6 @@ bool SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
     return false;
   }
 
-  QStringList loadOrder = organizer()->managedGame()->primaryPlugins();
   while (!file.atEnd()) {
     QByteArray line = file.readLine();
     QString pluginName;
@@ -109,10 +123,13 @@ bool SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
       pluginName = localCodec()->toUnicode(line.trimmed().constData());
     }
     if (pluginName.startsWith('*')) {
-      pluginName.remove(0, 1);
+		      pluginName.remove(0, 1);
     }
+	else {
+		pluginList->setState(pluginName, IPluginList::STATE_INACTIVE);
+	}
     if (pluginName.size() > 0) {
-      pluginList->setState(pluginName, IPluginList::STATE_ACTIVE);
+      
       plugins.removeAll(pluginName);
       if (!loadOrder.contains(pluginName, Qt::CaseInsensitive)) {
         loadOrder.append(pluginName);
@@ -122,10 +139,10 @@ bool SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
 
   file.close();
 
-  // we removed each plugin found in the file, so what's left are inactive mods
-  for (const QString &pluginName : plugins) {
-    pluginList->setState(pluginName, IPluginList::STATE_INACTIVE);
-  }
+ // we removed each plugin found in the file, so what's left are inactive mods
+ // for (const QString &pluginName : plugins) {
+ //   pluginList->setState(pluginName, IPluginList::STATE_INACTIVE);
+ // }
 
   if (useLoadOrder) {
     pluginList->setLoadOrder(loadOrder);
