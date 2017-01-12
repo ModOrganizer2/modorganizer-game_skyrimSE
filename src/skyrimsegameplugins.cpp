@@ -44,9 +44,11 @@ void SkyrimSEGamePlugins::writePluginList(const IPluginList *pluginList,
               return pluginList->priority(lhs) < pluginList->priority(rhs);
             });
 
+  QStringList PrimaryPlugins = organizer()->managedGame()->primaryPlugins();
+
   //TODO: do not write plugins in OFFICIAL_FILES container
   for (const QString &pluginName : plugins) {
-	if (!organizer()->managedGame()->primaryPlugins().contains("pluginName",Qt::CaseInsensitive)) {
+	if (!PrimaryPlugins.contains(pluginName,Qt::CaseInsensitive)) {
       if (pluginList->state(pluginName) == IPluginList::STATE_ACTIVE) {
         if (!textCodec->canEncode(pluginName)) {
           invalidFileNames = true;
@@ -124,25 +126,33 @@ bool SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
     }
     if (pluginName.startsWith('*')) {
 		      pluginName.remove(0, 1);
+			  if (pluginName.size() > 0) {
+				  pluginList->setState(pluginName, IPluginList::STATE_ACTIVE);
+				  plugins.removeAll(pluginName);
+				  if (!loadOrder.contains(pluginName, Qt::CaseInsensitive)) {
+					  loadOrder.append(pluginName);
+				  }
+			  }
     }
-	else {
-		pluginList->setState(pluginName, IPluginList::STATE_INACTIVE);
+	else
+	{
+		if (pluginName.size() > 0) {
+			pluginList->setState(pluginName, IPluginList::STATE_INACTIVE);
+			plugins.removeAll(pluginName);
+			if (!loadOrder.contains(pluginName, Qt::CaseInsensitive)) {
+				loadOrder.append(pluginName);
+			}
+		}
 	}
-    if (pluginName.size() > 0) {
-      
-      plugins.removeAll(pluginName);
-      if (!loadOrder.contains(pluginName, Qt::CaseInsensitive)) {
-        loadOrder.append(pluginName);
-      }
-    }
+
   }
 
   file.close();
 
  // we removed each plugin found in the file, so what's left are inactive mods
- // for (const QString &pluginName : plugins) {
- //   pluginList->setState(pluginName, IPluginList::STATE_INACTIVE);
- // }
+  //for (const QString &pluginName : plugins) {
+  //  pluginList->setState(pluginName, IPluginList::STATE_INACTIVE);
+  //}
 
   if (useLoadOrder) {
     pluginList->setLoadOrder(loadOrder);
