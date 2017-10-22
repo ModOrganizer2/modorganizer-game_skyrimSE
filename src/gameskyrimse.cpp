@@ -261,7 +261,11 @@ QString GameSkyrimSE::steamAPPId() const
 }
 
 QStringList GameSkyrimSE::primaryPlugins() const {
-    return{ "skyrim.esm", "update.esm", "dawnguard.esm", "hearthfires.esm", "dragonborn.esm" };//  };
+    return{ "skyrim.esm", "update.esm", "dawnguard.esm", "hearthfires.esm", "dragonborn.esm",
+            "ccbgssse002-exoticarrows.esl", "ccbgssse003-zombies.esl", "ccbgssse004-ruinsedge.esl",
+            "ccbgssse006-stendarshammer.esl", "ccbgssse007-chrysamere.esl", "ccbgssse010-petdwarvenarmoredmudcrab.esl",
+            "ccbgssse014-spellpack01.esl", "ccbgssse019-staffofsheogorath.esl", "ccmtysse001-knightsofthenine.esl",
+            "ccqdrsse001-survivalmode.esl" };//  };
 }
 
 QStringList GameSkyrimSE::gameVariants() const
@@ -287,7 +291,11 @@ QStringList GameSkyrimSE::iniFiles() const
 
 QStringList GameSkyrimSE::DLCPlugins() const
 {
-    return{ "" };
+    return{ "dawnguard.esm", "hearthfires.esm", "dragonborn.esm",
+            "ccbgssse002-exoticarrows.esl", "ccbgssse003-zombies.esl", "ccbgssse004-ruinsedge.esl",
+            "ccbgssse006-stendarshammer.esl", "ccbgssse007-chrysamere.esl", "ccbgssse010-petdwarvenarmoredmudcrab.esl",
+            "ccbgssse014-spellpack01.esl", "ccbgssse019-staffofsheogorath.esl", "ccmtysse001-knightsofthenine.esl",
+            "ccqdrsse001-survivalmode.esl" };
 }
 
 IPluginGame::LoadOrderMechanism GameSkyrimSE::loadOrderMechanism() const
