@@ -8,7 +8,7 @@ namespace MOBase { class IPluginGame; }
 class SkyrimSESaveGame : public GamebryoSaveGame
 {
 public:
-  SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame const *game);
+  SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame const *game, bool const lightEnabled = true);
 };
 
 #endif // _SKYRIMSESAVEGAME_H

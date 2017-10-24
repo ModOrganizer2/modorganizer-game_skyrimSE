@@ -2,8 +2,8 @@
 
 #include <Windows.h>
 
-SkyrimSESaveGame::SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame const *game) :
-  GamebryoSaveGame(fileName, game)
+SkyrimSESaveGame::SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame const *game, bool const lightEnabled) :
+  GamebryoSaveGame(fileName, game, lightEnabled)
 {
     FileWrapper file(this, "TESV_SAVEGAME"); //10bytes
     file.skip<unsigned long>(); // header size "TESV_SAVEGAME"
@@ -32,39 +32,39 @@ SkyrimSESaveGame::SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame 
     //A file time is a 64-bit value that represents the number of 100-nanosecond
     //intervals that have elapsed since 12:00 A.M. January 1, 1601 Coordinated Universal Time (UTC).
     //So we need to convert that to something useful
-	
-	//For some reason, the file time is off by about 6 hours.
-	//So we need to subtract those 6 hours from the filetime.
-	_ULARGE_INTEGER time;
-	time.LowPart=ftime.dwLowDateTime;
-	time.HighPart=ftime.dwHighDateTime;
-	time.QuadPart-=2.16e11;
-	ftime.dwHighDateTime=time.HighPart;
-	ftime.dwLowDateTime=time.LowPart;
-	
+
+    //For some reason, the file time is off by about 6 hours.
+    //So we need to subtract those 6 hours from the filetime.
+    _ULARGE_INTEGER time;
+    time.LowPart=ftime.dwLowDateTime;
+    time.HighPart=ftime.dwHighDateTime;
+    time.QuadPart-=2.16e11;
+    ftime.dwHighDateTime=time.HighPart;
+    ftime.dwLowDateTime=time.LowPart;
+
     SYSTEMTIME ctime;
     ::FileTimeToSystemTime(&ftime, &ctime);
 
     setCreationTime(ctime);
-	//file.skip<unsigned char>();
-	
-	unsigned long width;
-	unsigned long height;
-	file.read(width);
-	file.read(height);
-	
-	file.read(compressionType);
-	
-	file.readImage(width,height,320,true);
+    //file.skip<unsigned char>();
 
-	file.openCompressedData();
+    unsigned long width;
+    unsigned long height;
+    file.read(width);
+    file.read(height);
 
-	uint16_t saveGameVersion = file.readSaveGameVersion();
+    file.read(compressionType);
 
-	file.readPlugins(3);
+    file.readImage(width,height,320,true);
 
-	if (saveGameVersion >= 78)
-		file.readLightPlugins();
+    file.openCompressedData();
 
-	file.closeCompressedData();
+    uint16_t saveGameVersion = file.readSaveGameVersion();
+
+    file.readPlugins(4);
+
+    if (saveGameVersion >= 78)
+        file.readLightPlugins();
+
+    file.closeCompressedData();
 }
