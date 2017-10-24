@@ -2,8 +2,8 @@
 
 #include <Windows.h>
 
-SkyrimSESaveGame::SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame const *game) :
-  GamebryoSaveGame(fileName, game)
+SkyrimSESaveGame::SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame const *game, bool const lightEnabled) :
+  GamebryoSaveGame(fileName, game, lightEnabled)
 {
     FileWrapper file(this, "TESV_SAVEGAME"); //10bytes
     file.skip<unsigned long>(); // header size "TESV_SAVEGAME"
