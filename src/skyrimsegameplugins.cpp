@@ -96,7 +96,8 @@ bool SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
                                          bool useLoadOrder)
 {
   QStringList plugins = pluginList->pluginNames();
-  QStringList loadOrder = organizer()->managedGame()->primaryPlugins();
+  QStringList primaryPlugins = organizer()->managedGame()->primaryPlugins();
+  QStringList loadOrder(primaryPlugins);
 
   for (const QString &pluginName : loadOrder) {
     if (pluginList->state(pluginName) != IPluginList::STATE_MISSING) {
@@ -124,27 +125,33 @@ bool SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
     if ((line.size() > 0) && (line.at(0) != '#')) {
       pluginName = localCodec()->toUnicode(line.trimmed().constData());
     }
-    if (pluginName.startsWith('*')) {
-		      pluginName.remove(0, 1);
-			  if (pluginName.size() > 0) {
-				  pluginList->setState(pluginName, IPluginList::STATE_ACTIVE);
-				  plugins.removeAll(pluginName);
-				  if (!loadOrder.contains(pluginName, Qt::CaseInsensitive)) {
-					  loadOrder.append(pluginName);
-				  }
-			  }
-    }
-	else
-	{
-		if (pluginName.size() > 0) {
-			pluginList->setState(pluginName, IPluginList::STATE_INACTIVE);
-			plugins.removeAll(pluginName);
-			if (!loadOrder.contains(pluginName, Qt::CaseInsensitive)) {
-				loadOrder.append(pluginName);
+	if (!primaryPlugins.contains(pluginName, Qt::CaseInsensitive)) {
+		if (pluginName.startsWith('*')) {
+			pluginName.remove(0, 1);
+			if (pluginName.size() > 0) {
+				pluginList->setState(pluginName, IPluginList::STATE_ACTIVE);
+				plugins.removeAll(pluginName);
+				if (!loadOrder.contains(pluginName, Qt::CaseInsensitive)) {
+					loadOrder.append(pluginName);
+				}
+			}
+		}
+		else
+		{
+			if (pluginName.size() > 0) {
+				pluginList->setState(pluginName, IPluginList::STATE_INACTIVE);
+				plugins.removeAll(pluginName);
+				if (!loadOrder.contains(pluginName, Qt::CaseInsensitive)) {
+					loadOrder.append(pluginName);
+				}
 			}
 		}
 	}
-
+	else
+	{
+		pluginName.remove(0, 1);
+		plugins.removeAll(pluginName);
+	}
   }
 
   file.close();
