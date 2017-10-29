@@ -10,7 +10,7 @@ SkyrimSEScriptExtender::SkyrimSEScriptExtender(GameGamebryo const *game) :
 
 QString SkyrimSEScriptExtender::name() const
 {
-  return "sksese";
+  return "skse64";
 }
 
 QStringList SkyrimSEScriptExtender::saveGameAttachmentExtensions() const
