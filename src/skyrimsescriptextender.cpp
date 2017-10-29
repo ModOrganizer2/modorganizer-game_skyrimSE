@@ -8,9 +8,14 @@ SkyrimSEScriptExtender::SkyrimSEScriptExtender(GameGamebryo const *game) :
 {
 }
 
-QString SkyrimSEScriptExtender::name() const
+QString SkyrimSEScriptExtender::BinaryName() const
 {
-  return "skse64";
+  return "skse64_loader.exe";
+}
+
+QString SkyrimSEScriptExtender::PluginPath() const
+{
+  return "skse/plugins";
 }
 
 QStringList SkyrimSEScriptExtender::saveGameAttachmentExtensions() const

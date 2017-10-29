@@ -10,7 +10,8 @@ class SkyrimSEScriptExtender : public GamebryoScriptExtender
 public:
   SkyrimSEScriptExtender(GameGamebryo const *game);
 
-  virtual QString name() const override;
+  virtual QString BinaryName() const override;
+  virtual QString PluginPath() const override;
 
   virtual QStringList saveGameAttachmentExtensions() const override;
 
