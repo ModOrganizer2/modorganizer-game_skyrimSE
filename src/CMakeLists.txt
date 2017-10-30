@@ -43,6 +43,7 @@ ADD_LIBRARY(${PROJ_NAME} SHARED ${${PROJ_NAME}_HDRS} ${${PROJ_NAME}_SRCS} ${${PR
 TARGET_LINK_LIBRARIES(${PROJ_NAME}
                       Qt5::Widgets
                       ${Boost_LIBRARIES}
+					  DbgHelp
                       uibase
                       game_gamebryo
                       liblz4
