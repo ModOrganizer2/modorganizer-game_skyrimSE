@@ -59,12 +59,15 @@ SkyrimSESaveGame::SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame 
 
     file.openCompressedData();
 
-    uint16_t saveGameVersion = file.readSaveGameVersion();
+	uint8_t saveGameVersion = file.readChar();
+	uint8_t pluginInfoSize = file.readChar();
+	uint16_t other = file.readShort(); //Unknown
 
-    file.readPlugins(4);
+    file.readPlugins(1); // Just empty data
 
-    if (saveGameVersion >= 78)
-        file.readLightPlugins();
+	if (saveGameVersion >= 78) {
+		file.readLightPlugins();
+	}
 
     file.closeCompressedData();
 }
