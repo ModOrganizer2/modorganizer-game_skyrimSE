@@ -23,11 +23,11 @@
 
 #include <memory>
 
-
 #include "utility.h"
 #include <windows.h>
 #include <winreg.h>
 #include "scopeguard.h"
+
 namespace {
 
     std::unique_ptr<BYTE[]> getRegValue(HKEY key, LPCWSTR path, LPCWSTR value,
@@ -261,11 +261,11 @@ QString GameSkyrimSE::steamAPPId() const
 }
 
 QStringList GameSkyrimSE::primaryPlugins() const {
-    return{ "skyrim.esm", "update.esm", "dawnguard.esm", "hearthfires.esm", "dragonborn.esm",
-            "ccbgssse002-exoticarrows.esl", "ccbgssse003-zombies.esl", "ccbgssse004-ruinsedge.esl",
-            "ccbgssse006-stendarshammer.esl", "ccbgssse007-chrysamere.esl", "ccbgssse010-petdwarvenarmoredmudcrab.esl",
-            "ccbgssse014-spellpack01.esl", "ccbgssse019-staffofsheogorath.esl", "ccmtysse001-knightsofthenine.esl",
-            "ccqdrsse001-survivalmode.esl" };//  };
+  QStringList plugins = { "skyrim.esm", "update.esm", "dawnguard.esm", "hearthfires.esm", "dragonborn.esm" };
+
+  plugins.append(CCPlugins());
+
+  return plugins;
 }
 
 QStringList GameSkyrimSE::gameVariants() const
@@ -291,11 +291,34 @@ QStringList GameSkyrimSE::iniFiles() const
 
 QStringList GameSkyrimSE::DLCPlugins() const
 {
-    return{ "dawnguard.esm", "hearthfires.esm", "dragonborn.esm",
-            "ccbgssse002-exoticarrows.esl", "ccbgssse003-zombies.esl", "ccbgssse004-ruinsedge.esl",
-            "ccbgssse006-stendarshammer.esl", "ccbgssse007-chrysamere.esl", "ccbgssse010-petdwarvenarmoredmudcrab.esl",
-            "ccbgssse014-spellpack01.esl", "ccbgssse019-staffofsheogorath.esl", "ccmtysse001-knightsofthenine.esl",
-            "ccqdrsse001-survivalmode.esl" };
+    return{ "dawnguard.esm", "hearthfires.esm", "dragonborn.esm" };
+}
+
+QStringList GameSkyrimSE::CCPlugins() const
+{
+  QStringList plugins = {};
+  QFile file(gameDirectory().filePath("Skyrim.ccc"));
+  if (file.open(QIODevice::ReadOnly)) {
+    ON_BLOCK_EXIT([&file]() { file.close(); });
+
+    if (file.size() == 0) {
+      return plugins;
+    }
+    while (!file.atEnd()) {
+      QByteArray line = file.readLine().trimmed();
+      QString modName;
+      if ((line.size() > 0) && (line.at(0) != '#')) {
+        modName = QString::fromUtf8(line.constData()).toLower();
+      }
+
+      if (modName.size() > 0) {
+        if (!plugins.contains(modName, Qt::CaseInsensitive)) {
+          plugins.append(modName);
+        }
+      }
+    }
+  }
+  return plugins;
 }
 
 IPluginGame::LoadOrderMechanism GameSkyrimSE::loadOrderMechanism() const

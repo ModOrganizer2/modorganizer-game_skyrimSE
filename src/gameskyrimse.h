@@ -30,9 +30,10 @@ public: // IPluginGame interface
     virtual QStringList primaryPlugins() const override;
     virtual QStringList gameVariants() const override;
     virtual QString gameShortName() const override;
-	virtual QString gameNexusName() const override;
+	  virtual QString gameNexusName() const override;
     virtual QStringList iniFiles() const override;
     virtual QStringList DLCPlugins() const override;
+    virtual QStringList CCPlugins() const override;
     virtual LoadOrderMechanism loadOrderMechanism() const override;
     virtual int nexusModOrganizerID() const override;
     virtual int nexusGameID() const override;
