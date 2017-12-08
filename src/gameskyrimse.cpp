@@ -255,6 +255,11 @@ QString GameSkyrimSE::savegameExtension() const
     return "ess";
 }
 
+QString GameSkyrimSE::savegameSEExtension() const
+{
+    return "skse";
+}
+
 QString GameSkyrimSE::steamAPPId() const
 {
     return "489830";
