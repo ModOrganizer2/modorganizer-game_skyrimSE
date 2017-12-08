@@ -26,6 +26,7 @@ public: // IPluginGame interface
     virtual QList<MOBase::ExecutableInfo> executables() const override;
     virtual void initializeProfile(const QDir &path, ProfileSettings settings) const override;
     virtual QString savegameExtension() const override;
+    virtual QString savegameSEExtension() const override;
     virtual QString steamAPPId() const override;
     virtual QStringList primaryPlugins() const override;
     virtual QStringList gameVariants() const override;
