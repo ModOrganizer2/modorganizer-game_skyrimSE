@@ -186,13 +186,13 @@ QString GameSkyrimSE::gameName() const
 
 QList<ExecutableInfo> GameSkyrimSE::executables() const
 {
-    return QList<ExecutableInfo>()
-        << ExecutableInfo("SKSE", findInGameFolder(feature<ScriptExtender>()->loaderName()))
-        << ExecutableInfo("Skyrim Special Edition", findInGameFolder(binaryName()))
-        << ExecutableInfo("Skyrim Special Edition Launcher", findInGameFolder(getLauncherName()))
-        << ExecutableInfo("Creation Kit", findInGameFolder("CreationKit.exe"))
-        << ExecutableInfo("LOOT", getLootPath())
-        ;
+  return QList<ExecutableInfo>()
+    << ExecutableInfo("SKSE", findInGameFolder(feature<ScriptExtender>()->loaderName()))
+    << ExecutableInfo("Skyrim Special Edition", findInGameFolder(binaryName()))
+    << ExecutableInfo("Skyrim Special Edition Launcher", findInGameFolder(getLauncherName()))
+    << ExecutableInfo("Creation Kit", findInGameFolder("CreationKit.exe"))
+    << ExecutableInfo("LOOT", getLootPath()).withArgument("--game=\"Skyrim Special Edition\"")
+    ;
 }
 
 QFileInfo GameSkyrimSE::findInGameFolder(const QString &relativePath) const
