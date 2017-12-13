@@ -11,8 +11,7 @@ public:
   SkyrimSEUnmangedMods(const GameGamebryo *game);
   ~SkyrimSEUnmangedMods();
 
-  virtual QStringList secondaryFiles(const QString &modName) const override;
-  virtual QString displayName(const QString &modName) const override;
+  virtual QStringList mods(bool onlyOfficial) const override;
 };
 
 

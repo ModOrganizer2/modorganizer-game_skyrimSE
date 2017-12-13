@@ -16,9 +16,6 @@ using MOBase::IOrganizer;
 using MOBase::SafeWriteFile;
 using MOBase::reportError;
 
-//static const std::set<QString> OFFICIAL_FILES{
-//    "skyrim.esm", "update.esm", "Dawnguard.esm", "HearthFires.esm", "Dragonborn.esm"};
-
 SkyrimSEGamePlugins::SkyrimSEGamePlugins(IOrganizer *organizer)
   : GamebryoGamePlugins(organizer)
 {
@@ -156,10 +153,10 @@ bool SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
 
   file.close();
 
- // we removed each plugin found in the file, so what's left are inactive mods
-  //for (const QString &pluginName : plugins) {
-  //  pluginList->setState(pluginName, IPluginList::STATE_INACTIVE);
-  //}
+  // we removed each plugin found in the file, so what's left are inactive mods
+  for (const QString &pluginName : plugins) {
+    pluginList->setState(pluginName, IPluginList::STATE_INACTIVE);
+  }
 
   if (useLoadOrder) {
     pluginList->setLoadOrder(loadOrder);

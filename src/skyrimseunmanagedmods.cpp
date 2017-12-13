@@ -8,27 +8,25 @@ SkyrimSEUnmangedMods::SkyrimSEUnmangedMods(const GameGamebryo *game)
 SkyrimSEUnmangedMods::~SkyrimSEUnmangedMods()
 {}
 
+QStringList SkyrimSEUnmangedMods::mods(bool onlyOfficial) const {
+  QStringList result;
 
-//not necessary TODO: Remove
-QStringList SkyrimSEUnmangedMods::secondaryFiles(const QString &modName) const {
-  QStringList archives;
-  QDir dataDir = game()->dataDirectory();
-  for (const QString &archiveName : dataDir.entryList({modName + "*.bsa"})) {
-    archives.append(dataDir.absoluteFilePath(archiveName));
+  QStringList pluginList = game()->primaryPlugins();
+  QStringList otherPlugins = game()->DLCPlugins();
+  otherPlugins.append(game()->CCPlugins());
+  for (QString plugin : otherPlugins) {
+    pluginList.removeAll(plugin);
   }
-  return archives;
-}
-// not necessary TOOD: remove
-QString SkyrimSEUnmangedMods::displayName(const QString &modName) const
-{
-  if (modName.compare("hearthfires", Qt::CaseInsensitive) == 0)
-  {
-    return "Hearthfire";
-  } 
-  else
-  {
-    return modName;
+  QDir dataDir(game()->dataDirectory());
+  for (const QString &fileName : dataDir.entryList({ "*.esp", "*.esl", "*.esm" })) {
+    if (!pluginList.contains(fileName, Qt::CaseInsensitive)) {
+      if (!onlyOfficial || pluginList.contains(fileName, Qt::CaseInsensitive)) {
+        QFileInfo file(fileName);
+        result.append(file.baseName());
+      }
+    }
   }
-  
+
+  return result;
 }
 
