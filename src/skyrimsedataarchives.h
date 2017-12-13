@@ -2,13 +2,18 @@
 #define _SKYRIMSEDATAARCHIVES_H
 
 #include "gamebryodataarchives.h"
+#include <QStringList>
+#include <QDir>
 
 namespace MOBase { class IProfile; }
 
-#include <QStringList>
 
 class SkyrimSEDataArchives : public GamebryoDataArchives
 {
+
+public:
+
+  SkyrimSEDataArchives(const QDir &myGamesDir);
 
 public:
 
