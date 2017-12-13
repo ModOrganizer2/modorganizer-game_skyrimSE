@@ -168,7 +168,7 @@ bool GameSkyrimSE::init(IOrganizer *moInfo)
 
 
     registerFeature<ScriptExtender>(new SkyrimSEScriptExtender(this));
-    registerFeature<DataArchives>(new SkyrimSEDataArchives());
+    registerFeature<DataArchives>(new SkyrimSEDataArchives(myGamesPath()));
     registerFeature<LocalSavegames>(new GamebryoLocalSavegames(myGamesPath(), "Skyrim.ini"));
     registerFeature<SaveGameInfo>(new SkyrimSESaveGameInfo(this));
     registerFeature<GamePlugins>(new SkyrimSEGamePlugins(moInfo));
