@@ -120,7 +120,6 @@ QStringList SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
     }
   }
 
-  QString filePath = organizer()->profile()->absolutePath() + "/plugins.txt";
   QFile file(filePath);
   if (!file.open(QIODevice::ReadOnly)) {
     qWarning("%s not found", qPrintable(filePath));
