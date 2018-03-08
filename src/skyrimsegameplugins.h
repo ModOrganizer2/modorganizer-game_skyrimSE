@@ -16,9 +16,9 @@ public:
 protected:
   virtual void writePluginList(const MOBase::IPluginList *pluginList,
                                const QString &filePath) override;
-  virtual bool readPluginList(MOBase::IPluginList *pluginList,
-                              const QString &filePath,
-                              bool useLoadOrder) override;
+  virtual QStringList readPluginList(MOBase::IPluginList *pluginList,
+                              const QString &filePath) override;
+  virtual void getLoadOrder(QStringList &loadOrder) override;
 
 private:
   std::map<QString, QByteArray> m_LastSaveHash;
