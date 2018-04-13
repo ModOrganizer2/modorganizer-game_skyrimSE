@@ -89,7 +89,6 @@ void SkyrimSEGamePlugins::writePluginList(const IPluginList *pluginList,
 }
 
 bool SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
-                                         const QString &filePath,
                                          bool useLoadOrder)
 {
   QStringList plugins = pluginList->pluginNames();
@@ -102,6 +101,7 @@ bool SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
     }
   }
 
+  QString filePath = organizer()->profile()->absolutePath() + "/plugins.txt";
   QFile file(filePath);
   if (!file.open(QIODevice::ReadOnly)) {
     qWarning("%s not found", qPrintable(filePath));

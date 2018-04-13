@@ -6,7 +6,8 @@ SkyrimSESaveGame::SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame 
   GamebryoSaveGame(fileName, game, lightEnabled)
 {
     FileWrapper file(this, "TESV_SAVEGAME"); //10bytes
-    file.skip<unsigned long>(); // header size "TESV_SAVEGAME"
+	unsigned long headerSize;
+    file.read(headerSize); // header size "TESV_SAVEGAME"
     file.skip<unsigned long>(); // header version 74. Original Skyrim is 79
     file.read(m_SaveNumber);
 
@@ -46,14 +47,13 @@ SkyrimSESaveGame::SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame 
     ::FileTimeToSystemTime(&ftime, &ctime);
 
     setCreationTime(ctime);
-    //file.skip<unsigned char>();
 
     unsigned long width;
     unsigned long height;
     file.read(width);
     file.read(height);
 
-    file.read(compressionType);
+    file.read(m_CompressionType);
 
     file.readImage(width,height,320,true);
 
