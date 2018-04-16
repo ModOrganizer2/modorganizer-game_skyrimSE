@@ -32,6 +32,7 @@ public: // IPluginGame interface
     virtual QStringList gameVariants() const override;
     virtual QString gameShortName() const override;
 	  virtual QString gameNexusName() const override;
+    virtual QStringList validShortNames() const override;
     virtual QStringList iniFiles() const override;
     virtual QStringList DLCPlugins() const override;
     virtual QStringList CCPlugins() const override;

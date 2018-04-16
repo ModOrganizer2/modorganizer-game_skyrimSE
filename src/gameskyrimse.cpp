@@ -283,11 +283,15 @@ QString GameSkyrimSE::gameShortName() const
     return "skyrimse";
 }
 
+QStringList GameSkyrimSE::validShortNames() const
+{
+  return { "skyrim" };
+}
+
 QString GameSkyrimSE::gameNexusName() const
 {
     return "skyrimspecialedition";
 }
-
 
 QStringList GameSkyrimSE::iniFiles() const
 {
