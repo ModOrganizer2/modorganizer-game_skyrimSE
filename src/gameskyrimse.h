@@ -52,6 +52,7 @@ public: // IPlugin interface
     virtual MOBase::VersionInfo version() const override;
     virtual bool isActive() const override;
     virtual QList<MOBase::PluginSetting> settings() const override;
+    virtual MappingType mappings() const override;
 
 
 protected:
@@ -60,15 +61,7 @@ protected:
     QFileInfo findInGameFolder(const QString &relativePath) const;
     QString myGamesPath() const;
 
-public: // IPluginFileMapper
-    virtual MappingType mappings() const;
-    
-
-private:
-    MOBase::IOrganizer *m_Organizer;
-    QString identifyGamePath() const;
-    QString m_GamePath;
-    QString m_MyGamesPath;
+    virtual QString identifyGamePath() const override;
  
 };
 
