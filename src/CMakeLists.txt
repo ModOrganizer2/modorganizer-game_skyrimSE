@@ -46,17 +46,19 @@ ADD_LIBRARY(${PROJ_NAME} SHARED ${${PROJ_NAME}_HDRS} ${${PROJ_NAME}_SRCS} ${${PR
 TARGET_LINK_LIBRARIES(${PROJ_NAME}
                       Qt5::Widgets
                       ${Boost_LIBRARIES}
-					  DbgHelp
+                      DbgHelp
                       uibase
                       game_gamebryo
                       liblz4
                       version)
 
-IF(MSVC)
+IF (MSVC)
+  SET_TARGET_PROPERTIES(${PROJ_NAME} PROPERTIES COMPILE_FLAGS "/std:c++latest")
+ENDIF()
+IF (MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+  # 32 bits
   SET_TARGET_PROPERTIES(${PROJ_NAME} PROPERTIES LINK_FLAGS "/LARGEADDRESSAWARE")
-ELSE(MSVC)
-  SET_TARGET_PROPERTIES(${PROJ_NAME} PROPERTIES LINK_FLAGS "-std=c++11")
-ENDIF(MSVC)
+ENDIF()
 
 IF (NOT "${OPTIMIZE_COMPILE_FLAGS}" STREQUAL "")
   SET_TARGET_PROPERTIES(${PROJ_NAME} PROPERTIES COMPILE_FLAGS_RELWITHDEBINFO ${OPTIMIZE_COMPILE_FLAGS})
