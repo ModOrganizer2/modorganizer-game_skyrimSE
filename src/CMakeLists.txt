@@ -12,8 +12,15 @@ SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTOUIC ON)
 FIND_PACKAGE(Qt5Widgets REQUIRED)
 QT5_WRAP_UI(${PROJ_NAME}_UIHDRS ${${PROJ_NAME}_FORMS})
+
+SET(default_project_path "${CMAKE_SOURCE_DIR}/..")
+GET_FILENAME_COMPONENT(${default_project_path} ${default_project_path} REALPATH)
+
+SET(project_path "${default_project_path}" CACHE PATH "path to the other mo projects")
+
 FIND_PACKAGE(Qt5LinguistTools)
-QT5_CREATE_TRANSLATION(${PROJ_NAME}_translations_qm ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/src/${PROJ_NAME}_en.ts)
+SET(translation_sources  ${CMAKE_SOURCE_DIR}/src ${project_path}/game_gamebryo/src)
+QT5_CREATE_TRANSLATION(${PROJ_NAME}_translations_qm ${translation_sources} ${CMAKE_SOURCE_DIR}/src/${PROJ_NAME}_en.ts)
 
 SET(Boost_USE_STATIC_LIBS        ON)
 SET(Boost_USE_MULTITHREADED      ON)
@@ -24,10 +31,6 @@ IF (Boost_FOUND)
   INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 ENDIF ()
 
-SET(default_project_path "${CMAKE_SOURCE_DIR}/..")
-GET_FILENAME_COMPONENT(${default_project_path} ${default_project_path} REALPATH)
-
-SET(project_path "${default_project_path}" CACHE PATH "path to the other mo projects")
 SET(lib_path "${project_path}/../../install/libs")
 
 INCLUDE_DIRECTORIES(${project_path}/uibase/src
@@ -43,17 +46,19 @@ ADD_LIBRARY(${PROJ_NAME} SHARED ${${PROJ_NAME}_HDRS} ${${PROJ_NAME}_SRCS} ${${PR
 TARGET_LINK_LIBRARIES(${PROJ_NAME}
                       Qt5::Widgets
                       ${Boost_LIBRARIES}
-					  DbgHelp
+                      DbgHelp
                       uibase
                       game_gamebryo
                       liblz4
                       version)
 
-IF(MSVC)
+IF (MSVC)
+  SET_TARGET_PROPERTIES(${PROJ_NAME} PROPERTIES COMPILE_FLAGS "/std:c++latest")
+ENDIF()
+IF (MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+  # 32 bits
   SET_TARGET_PROPERTIES(${PROJ_NAME} PROPERTIES LINK_FLAGS "/LARGEADDRESSAWARE")
-ELSE(MSVC)
-  SET_TARGET_PROPERTIES(${PROJ_NAME} PROPERTIES LINK_FLAGS "-std=c++11")
-ENDIF(MSVC)
+ENDIF()
 
 IF (NOT "${OPTIMIZE_COMPILE_FLAGS}" STREQUAL "")
   SET_TARGET_PROPERTIES(${PROJ_NAME} PROPERTIES COMPILE_FLAGS_RELWITHDEBINFO ${OPTIMIZE_COMPILE_FLAGS})
