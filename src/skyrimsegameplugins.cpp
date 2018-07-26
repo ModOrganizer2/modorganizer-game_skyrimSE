@@ -21,6 +21,25 @@ SkyrimSEGamePlugins::SkyrimSEGamePlugins(IOrganizer *organizer)
 {
 }
 
+void SkyrimSEGamePlugins::getLoadOrder(QStringList &loadOrder) {
+  QString loadOrderPath =
+    organizer()->profile()->absolutePath() + "/loadorder.txt";
+  QString pluginsPath = organizer()->profile()->absolutePath() + "/plugins.txt";
+
+  bool loadOrderIsNew = !m_LastRead.isValid() ||
+    !QFileInfo(loadOrderPath).exists() ||
+    QFileInfo(loadOrderPath).lastModified() > m_LastRead;
+  bool pluginsIsNew = !m_LastRead.isValid() ||
+    QFileInfo(pluginsPath).lastModified() > m_LastRead;
+
+  if (loadOrderIsNew || !pluginsIsNew) {
+    loadOrder = readLoadOrderList(m_Organizer->pluginList(), loadOrderPath);
+  }
+  else {
+    loadOrder = readPluginList(m_Organizer->pluginList());
+  }
+}
+
 void SkyrimSEGamePlugins::writePluginList(const IPluginList *pluginList,
                                           const QString &filePath) {
   SafeWriteFile file(filePath);
@@ -46,20 +65,20 @@ void SkyrimSEGamePlugins::writePluginList(const IPluginList *pluginList,
   //TODO: do not write plugins in OFFICIAL_FILES container
   for (const QString &pluginName : plugins) {
 	if (!PrimaryPlugins.contains(pluginName,Qt::CaseInsensitive)) {
-      if (pluginList->state(pluginName) == IPluginList::STATE_ACTIVE) {
-        if (!textCodec->canEncode(pluginName)) {
-          invalidFileNames = true;
-          qCritical("invalid plugin name %s", qPrintable(pluginName));
-        }
-        else
-        { 
-          file->write("*");
-          file->write(textCodec->fromUnicode(pluginName));
-        
-        }
-        file->write("\r\n");
-        ++writtenCount;
+    if (pluginList->state(pluginName) == IPluginList::STATE_ACTIVE) {
+      if (!textCodec->canEncode(pluginName)) {
+        invalidFileNames = true;
+        qCritical("invalid plugin name %s", qPrintable(pluginName));
       }
+      else
+      {
+        file->write("*");
+        file->write(textCodec->fromUnicode(pluginName));
+
+      }
+      file->write("\r\n");
+      ++writtenCount;
+    }
 	  else
 	  {
         if (!textCodec->canEncode(pluginName)) {
@@ -88,8 +107,7 @@ void SkyrimSEGamePlugins::writePluginList(const IPluginList *pluginList,
   }
 }
 
-bool SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
-                                         bool useLoadOrder)
+QStringList SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList)
 {
   QStringList plugins = pluginList->pluginNames();
   QStringList primaryPlugins = organizer()->managedGame()->primaryPlugins();
@@ -101,11 +119,12 @@ bool SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
     }
   }
 
+
   QString filePath = organizer()->profile()->absolutePath() + "/plugins.txt";
   QFile file(filePath);
   if (!file.open(QIODevice::ReadOnly)) {
     qWarning("%s not found", qPrintable(filePath));
-    return false;
+    return loadOrder;
   }
   ON_BLOCK_EXIT([&]() { file.close(); });
 
@@ -113,7 +132,7 @@ bool SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
     // MO stores at least a header in the file. if it's completely empty the
     // file is broken
     qWarning("%s empty", qPrintable(filePath));
-    return false;
+    return loadOrder;
   }
 
   while (!file.atEnd()) {
@@ -158,9 +177,5 @@ bool SkyrimSEGamePlugins::readPluginList(MOBase::IPluginList *pluginList,
     pluginList->setState(pluginName, IPluginList::STATE_INACTIVE);
   }
 
-  if (useLoadOrder) {
-    pluginList->setLoadOrder(loadOrder);
-  }
-
-  return true;
+  return loadOrder;
 }
