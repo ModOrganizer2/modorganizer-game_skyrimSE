@@ -19,7 +19,7 @@ GET_FILENAME_COMPONENT(${default_project_path} ${default_project_path} REALPATH)
 SET(project_path "${default_project_path}" CACHE PATH "path to the other mo projects")
 
 FIND_PACKAGE(Qt5LinguistTools)
-SET(translation_sources  ${CMAKE_SOURCE_DIR}/src ${project_path}/game_gamebryo/src)
+SET(translation_sources  ${CMAKE_SOURCE_DIR}/src ${project_path}/game_gamebryo/src/gamebryo ${project_path}/game_gamebryo/src/creation)
 QT5_CREATE_TRANSLATION(${PROJ_NAME}_translations_qm ${translation_sources} ${CMAKE_SOURCE_DIR}/src/${PROJ_NAME}_en.ts)
 
 SET(Boost_USE_STATIC_LIBS        ON)
@@ -35,7 +35,8 @@ SET(lib_path "${project_path}/../../install/libs")
 
 INCLUDE_DIRECTORIES(${project_path}/uibase/src
                     ${project_path}/game_features/src
-                    ${project_path}/game_gamebryo/src)
+                    ${project_path}/game_gamebryo/src/gamebryo
+                    ${project_path}/game_gamebryo/src/creation)
 LINK_DIRECTORIES(${project_path}/uibase/build/src
                  ${lib_path}
                  ${LZ4_ROOT}/dll)
@@ -49,6 +50,7 @@ TARGET_LINK_LIBRARIES(${PROJ_NAME}
                       DbgHelp
                       uibase
                       game_gamebryo
+                      game_creation
                       liblz4
                       version)
 

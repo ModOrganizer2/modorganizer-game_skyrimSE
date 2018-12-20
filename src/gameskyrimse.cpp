@@ -3,13 +3,12 @@
 #include "skyrimsedataarchives.h"
 #include "skyrimsescriptextender.h"
 #include "skyrimsesavegameinfo.h"
-#include "skyrimsegameplugins.h"
 #include "skyrimseunmanagedmods.h"
 
 #include <pluginsetting.h>
 #include <executableinfo.h>
 #include <gamebryolocalsavegames.h>
-#include <gamebryogameplugins.h>
+#include <creationgameplugins.h>
 #include "versioninfo.h"
 
 #include <QCoreApplication>
@@ -73,7 +72,7 @@ bool GameSkyrimSE::init(IOrganizer *moInfo)
     registerFeature<DataArchives>(new SkyrimSEDataArchives(myGamesPath()));
     registerFeature<LocalSavegames>(new GamebryoLocalSavegames(myGamesPath(), "Skyrim.ini"));
     registerFeature<SaveGameInfo>(new SkyrimSESaveGameInfo(this));
-    registerFeature<GamePlugins>(new SkyrimSEGamePlugins(moInfo));
+    registerFeature<GamePlugins>(new CreationGamePlugins(moInfo));
     registerFeature<UnmanagedMods>(new SkyrimSEUnmangedMods(this));
 
     return true;
@@ -119,7 +118,7 @@ QString GameSkyrimSE::description() const
 
 MOBase::VersionInfo GameSkyrimSE::version() const
 {
-    return VersionInfo(0, 1, 5, VersionInfo::RELEASE_ALPHA);
+    return VersionInfo(1, 3, 0, VersionInfo::RELEASE_FINAL);
 }
 
 bool GameSkyrimSE::isActive() const
