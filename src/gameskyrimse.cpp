@@ -148,6 +148,7 @@ void GameSkyrimSE::initializeProfile(const QDir &path, ProfileSettings settings)
         }
 
         copyToProfile(myGamesPath(), path, "skyrimprefs.ini");
+        copyToProfile(myGamesPath(), path, "skyrimcustom.ini");
     }
 }
 
@@ -196,7 +197,7 @@ QString GameSkyrimSE::gameNexusName() const
 
 QStringList GameSkyrimSE::iniFiles() const
 {
-    return{ "skyrim.ini", "skyrimprefs.ini" };
+    return{ "skyrim.ini", "skyrimprefs.ini", "skyrimcustom.ini" };
 }
 
 QStringList GameSkyrimSE::DLCPlugins() const
