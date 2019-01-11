@@ -96,6 +96,11 @@ QList<ExecutableInfo> GameSkyrimSE::executables() const
     ;
 }
 
+QList<ExecutableForcedLoadSetting> GameSkyrimSE::executableForcedLoads() const
+{
+  return QList<ExecutableForcedLoadSetting>();
+}
+
 QFileInfo GameSkyrimSE::findInGameFolder(const QString &relativePath) const
 {
     return QFileInfo(m_GamePath + "/" + relativePath);

@@ -24,6 +24,7 @@ public: // IPluginGame interface
     virtual QString gameName() const override;
 
     virtual QList<MOBase::ExecutableInfo> executables() const override;
+    virtual QList<MOBase::ExecutableForcedLoadSetting> executableForcedLoads() const override;
     virtual void initializeProfile(const QDir &path, ProfileSettings settings) const override;
     virtual QString savegameExtension() const override;
     virtual QString savegameSEExtension() const override;
@@ -62,7 +63,7 @@ protected:
     QString myGamesPath() const;
 
     virtual QString identifyGamePath() const override;
- 
+
 };
 
 #endif // _GAMESKYRIMSE_H
