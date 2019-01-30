@@ -187,12 +187,12 @@ QStringList GameSkyrimSE::gameVariants() const
 
 QString GameSkyrimSE::gameShortName() const
 {
-    return "skyrimse";
+    return "SkyrimSE";
 }
 
 QStringList GameSkyrimSE::validShortNames() const
 {
-  return { "skyrim" };
+  return { "Skyrim" };
 }
 
 QString GameSkyrimSE::gameNexusName() const

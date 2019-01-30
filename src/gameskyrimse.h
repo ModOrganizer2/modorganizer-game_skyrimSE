@@ -11,7 +11,7 @@ class GameSkyrimSE : public GameGamebryo
 {
     Q_OBJECT
 
-        Q_PLUGIN_METADATA(IID "com.soundcontactstudio.GameSkyrimSE" FILE "gameskyrimse.json")
+    Q_PLUGIN_METADATA(IID "com.soundcontactstudio.GameSkyrimSE" FILE "gameskyrimse.json")
 
 public:
 
@@ -32,7 +32,7 @@ public: // IPluginGame interface
     virtual QStringList primaryPlugins() const override;
     virtual QStringList gameVariants() const override;
     virtual QString gameShortName() const override;
-	  virtual QString gameNexusName() const override;
+    virtual QString gameNexusName() const override;
     virtual QStringList validShortNames() const override;
     virtual QStringList iniFiles() const override;
     virtual QStringList DLCPlugins() const override;
