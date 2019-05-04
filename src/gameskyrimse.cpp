@@ -87,13 +87,18 @@ QString GameSkyrimSE::gameName() const
 
 QList<ExecutableInfo> GameSkyrimSE::executables() const
 {
-  return QList<ExecutableInfo>()
-    << ExecutableInfo("SKSE", findInGameFolder(feature<ScriptExtender>()->loaderName()))
-    << ExecutableInfo("Skyrim Special Edition", findInGameFolder(binaryName()))
-    << ExecutableInfo("Skyrim Special Edition Launcher", findInGameFolder(getLauncherName()))
-    << ExecutableInfo("Creation Kit", findInGameFolder("CreationKit.exe"))
-    << ExecutableInfo("LOOT", getLootPath()).withArgument("--game=\"Skyrim Special Edition\"")
-    ;
+    return QList<ExecutableInfo>()
+        << ExecutableInfo("SKSE", findInGameFolder(feature<ScriptExtender>()->loaderName()))
+        << ExecutableInfo("Skyrim Special Edition", findInGameFolder(binaryName()))
+        << ExecutableInfo("Skyrim Special Edition Launcher", findInGameFolder(getLauncherName()))
+        << ExecutableInfo("Creation Kit", findInGameFolder("CreationKit.exe"))
+        << ExecutableInfo("LOOT", getLootPath()).withArgument("--game=\"Skyrim Special Edition\"")
+        ;
+}
+
+QList<ExecutableForcedLoadSetting> GameSkyrimSE::executableForcedLoads() const
+{
+    return QList<ExecutableForcedLoadSetting>();
 }
 
 QFileInfo GameSkyrimSE::findInGameFolder(const QString &relativePath) const
@@ -118,7 +123,7 @@ QString GameSkyrimSE::description() const
 
 MOBase::VersionInfo GameSkyrimSE::version() const
 {
-    return VersionInfo(1, 3, 0, VersionInfo::RELEASE_FINAL);
+    return VersionInfo(1, 3, 1, VersionInfo::RELEASE_FINAL);
 }
 
 bool GameSkyrimSE::isActive() const
@@ -148,6 +153,7 @@ void GameSkyrimSE::initializeProfile(const QDir &path, ProfileSettings settings)
         }
 
         copyToProfile(myGamesPath(), path, "skyrimprefs.ini");
+        copyToProfile(myGamesPath(), path, "skyrimcustom.ini");
     }
 }
 
@@ -167,11 +173,11 @@ QString GameSkyrimSE::steamAPPId() const
 }
 
 QStringList GameSkyrimSE::primaryPlugins() const {
-  QStringList plugins = { "skyrim.esm", "update.esm", "dawnguard.esm", "hearthfires.esm", "dragonborn.esm" };
+    QStringList plugins = { "skyrim.esm", "update.esm", "dawnguard.esm", "hearthfires.esm", "dragonborn.esm" };
 
-  plugins.append(CCPlugins());
+    plugins.append(CCPlugins());
 
-  return plugins;
+    return plugins;
 }
 
 QStringList GameSkyrimSE::gameVariants() const
@@ -181,12 +187,12 @@ QStringList GameSkyrimSE::gameVariants() const
 
 QString GameSkyrimSE::gameShortName() const
 {
-    return "skyrimse";
+    return "SkyrimSE";
 }
 
 QStringList GameSkyrimSE::validShortNames() const
 {
-  return { "skyrim" };
+    return { "Skyrim" };
 }
 
 QString GameSkyrimSE::gameNexusName() const
@@ -196,7 +202,7 @@ QString GameSkyrimSE::gameNexusName() const
 
 QStringList GameSkyrimSE::iniFiles() const
 {
-    return{ "skyrim.ini", "skyrimprefs.ini" };
+    return{ "skyrim.ini", "skyrimprefs.ini", "skyrimcustom.ini" };
 }
 
 QStringList GameSkyrimSE::DLCPlugins() const
@@ -206,29 +212,29 @@ QStringList GameSkyrimSE::DLCPlugins() const
 
 QStringList GameSkyrimSE::CCPlugins() const
 {
-  QStringList plugins = {};
-  QFile file(gameDirectory().filePath("Skyrim.ccc"));
-  if (file.open(QIODevice::ReadOnly)) {
-    ON_BLOCK_EXIT([&file]() { file.close(); });
+    QStringList plugins = {};
+    QFile file(gameDirectory().filePath("Skyrim.ccc"));
+    if (file.open(QIODevice::ReadOnly)) {
+        ON_BLOCK_EXIT([&file]() { file.close(); });
 
-    if (file.size() == 0) {
-      return plugins;
-    }
-    while (!file.atEnd()) {
-      QByteArray line = file.readLine().trimmed();
-      QString modName;
-      if ((line.size() > 0) && (line.at(0) != '#')) {
-        modName = QString::fromUtf8(line.constData()).toLower();
-      }
-
-      if (modName.size() > 0) {
-        if (!plugins.contains(modName, Qt::CaseInsensitive)) {
-          plugins.append(modName);
+        if (file.size() == 0) {
+            return plugins;
         }
-      }
+        while (!file.atEnd()) {
+            QByteArray line = file.readLine().trimmed();
+            QString modName;
+            if ((line.size() > 0) && (line.at(0) != '#')) {
+                modName = QString::fromUtf8(line.constData()).toLower();
+            }
+
+            if (modName.size() > 0) {
+                if (!plugins.contains(modName, Qt::CaseInsensitive)) {
+                    plugins.append(modName);
+                }
+            }
+        }
     }
-  }
-  return plugins;
+    return plugins;
 }
 
 IPluginGame::LoadOrderMechanism GameSkyrimSE::loadOrderMechanism() const

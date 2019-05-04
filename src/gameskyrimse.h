@@ -11,7 +11,7 @@ class GameSkyrimSE : public GameGamebryo
 {
     Q_OBJECT
 
-        Q_PLUGIN_METADATA(IID "com.soundcontactstudio.GameSkyrimSE" FILE "gameskyrimse.json")
+    Q_PLUGIN_METADATA(IID "com.soundcontactstudio.GameSkyrimSE" FILE "gameskyrimse.json")
 
 public:
 
@@ -24,6 +24,7 @@ public: // IPluginGame interface
     virtual QString gameName() const override;
 
     virtual QList<MOBase::ExecutableInfo> executables() const override;
+    virtual QList<MOBase::ExecutableForcedLoadSetting> executableForcedLoads() const override;
     virtual void initializeProfile(const QDir &path, ProfileSettings settings) const override;
     virtual QString savegameExtension() const override;
     virtual QString savegameSEExtension() const override;
@@ -31,7 +32,7 @@ public: // IPluginGame interface
     virtual QStringList primaryPlugins() const override;
     virtual QStringList gameVariants() const override;
     virtual QString gameShortName() const override;
-	  virtual QString gameNexusName() const override;
+    virtual QString gameNexusName() const override;
     virtual QStringList validShortNames() const override;
     virtual QStringList iniFiles() const override;
     virtual QStringList DLCPlugins() const override;
@@ -62,7 +63,7 @@ protected:
     QString myGamesPath() const;
 
     virtual QString identifyGamePath() const override;
- 
+
 };
 
 #endif // _GAMESKYRIMSE_H
