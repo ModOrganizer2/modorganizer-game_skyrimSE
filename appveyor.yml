@@ -14,11 +14,11 @@ build_script:
 
     C:\Python37-x64\python.exe unimake.py -d c:\projects\modorganizer-build -s Appveyor_Build=True %APPVEYOR_PROJECT_NAME%
 artifacts:
-- path: vsbuild\src\RelWithDebInfo\game_skyrimse.dll
+- path: ..\..\..\install\bin\plugins\game_skyrimse.dll
   name: game_skyrimse_dll
-- path: vsbuild\src\RelWithDebInfo\game_skyrimse.pdb
+- path: ..\..\..\install\pdb\game_skyrimse.pdb
   name: game_skyrimse_pdb
-- path: vsbuild\src\RelWithDebInfo\game_skyrimse.lib
+- path: ..\..\..\install\libs\game_skyrimse.lib
   name: game_skyrimse_lib
 on_success:
   - ps: Set-Location -Path $env:APPVEYOR_BUILD_FOLDER
