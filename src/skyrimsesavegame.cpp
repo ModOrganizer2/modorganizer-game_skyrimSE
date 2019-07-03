@@ -59,7 +59,7 @@ SkyrimSESaveGame::SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame 
   // compatibility between LE and SE:
   //  SE has an additional uin16_t for compression
   //  SE uses an alpha channel, whereas LE does not
-  if (static_cast<GameVersions>(version) == GameVersions::SpecialEdition) {
+  if (version == 12) {
     file.read(m_CompressionType);
     alpha = true;
   }
