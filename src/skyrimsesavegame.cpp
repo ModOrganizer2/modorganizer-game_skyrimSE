@@ -8,7 +8,8 @@ SkyrimSESaveGame::SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame 
   FileWrapper file(this, "TESV_SAVEGAME"); //10bytes
   unsigned long headerSize;
   file.read(headerSize); // header size "TESV_SAVEGAME"
-  file.skip<unsigned long>(); // header version 74. Original Skyrim is 79
+  unsigned long version = 0;
+  file.read(version);
   file.read(m_SaveNumber);
 
   file.read(m_PCName);
@@ -53,9 +54,17 @@ SkyrimSESaveGame::SkyrimSESaveGame(QString const &fileName, MOBase::IPluginGame 
   file.read(width);
   file.read(height);
 
-  file.read(m_CompressionType);
+  bool alpha = false;
 
-  file.readImage(width, height, 320, true);
+  // compatibility between LE and SE:
+  //  SE has an additional uin16_t for compression
+  //  SE uses an alpha channel, whereas LE does not
+  if (version == 12) {
+    file.read(m_CompressionType);
+    alpha = true;
+  }
+
+  file.readImage(width, height, 320, alpha);
 
   file.openCompressedData();
 
