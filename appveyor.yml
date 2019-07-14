@@ -1,6 +1,6 @@
 version: 1.0.{build}
 skip_branch_with_pr: true
-image: Visual Studio 2017
+image: Visual Studio 2019 Preview
 environment:
   WEBHOOK_URL:
     secure: gOKbXaZM9ImtMD5XrYITvdyZUW/az082G9OIN1EC1Vbg57wBaeLhi49uGjxPw5GVujHku6kxN6ab89zhbS5GVeluR76GM83IbKV4Sh7udXzoYZZdg6YudtYHzdhCgUeiedpswbuczTq9ceIkkfSEWZuh/lMAAVVwvcGsJAnoPFw=
@@ -14,11 +14,11 @@ build_script:
 
     C:\Python37-x64\python.exe unimake.py -d c:\projects\modorganizer-build -s Appveyor_Build=True %APPVEYOR_PROJECT_NAME%
 artifacts:
-- path: vsbuild\src\RelWithDebInfo\game_skyrimse.dll
+- path: build\src\game_skyrimse.dll
   name: game_skyrimse_dll
-- path: vsbuild\src\RelWithDebInfo\game_skyrimse.pdb
+- path: build\src\game_skyrimse.pdb
   name: game_skyrimse_pdb
-- path: vsbuild\src\RelWithDebInfo\game_skyrimse.lib
+- path: build\src\game_skyrimse.lib
   name: game_skyrimse_lib
 on_success:
   - ps: Set-Location -Path $env:APPVEYOR_BUILD_FOLDER
@@ -26,5 +26,7 @@ on_success:
   - ps: ./send.ps1 success $env:WEBHOOK_URL
 on_failure:
   - ps: Set-Location -Path $env:APPVEYOR_BUILD_FOLDER
+  - ps: Push-AppveyorArtifact ${env:APPVEYOR_BUILD_FOLDER}\stdout.log
+  - ps: Push-AppveyorArtifact ${env:APPVEYOR_BUILD_FOLDER}\stderr.log
   - ps: Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
   - ps: ./send.ps1 failure $env:WEBHOOK_URL
