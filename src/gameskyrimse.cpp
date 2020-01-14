@@ -123,7 +123,7 @@ QString GameSkyrimSE::description() const
 
 MOBase::VersionInfo GameSkyrimSE::version() const
 {
-    return VersionInfo(1, 4, 0, VersionInfo::RELEASE_FINAL);
+    return VersionInfo(1, 4, 1, VersionInfo::RELEASE_FINAL);
 }
 
 bool GameSkyrimSE::isActive() const
