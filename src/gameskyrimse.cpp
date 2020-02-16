@@ -10,6 +10,7 @@
 #include <gamebryolocalsavegames.h>
 #include <creationgameplugins.h>
 #include "versioninfo.h"
+#include <utility.h>
 
 #include <QCoreApplication>
 #include <QDir>
@@ -172,8 +173,15 @@ QString GameSkyrimSE::steamAPPId() const
     return "489830";
 }
 
-QStringList GameSkyrimSE::primaryPlugins() const {
-    QStringList plugins = { "skyrim.esm", "update.esm", "dawnguard.esm", "hearthfires.esm", "dragonborn.esm" };
+QStringList GameSkyrimSE::primaryPlugins() const
+{
+    QStringList plugins = {
+      "skyrim.esm",
+      "update.esm",
+      "dawnguard.esm",
+      "hearthfires.esm",
+      "dragonborn.esm"
+    };
 
     plugins.append(CCPlugins());
 
@@ -212,29 +220,19 @@ QStringList GameSkyrimSE::DLCPlugins() const
 
 QStringList GameSkyrimSE::CCPlugins() const
 {
-    QStringList plugins = {};
-    QFile file(gameDirectory().filePath("Skyrim.ccc"));
-    if (file.open(QIODevice::ReadOnly)) {
-        ON_BLOCK_EXIT([&file]() { file.close(); });
+  QStringList plugins;
+  std::set<QString> pluginsLookup;
 
-        if (file.size() == 0) {
-            return plugins;
-        }
-        while (!file.atEnd()) {
-            QByteArray line = file.readLine().trimmed();
-            QString modName;
-            if ((line.size() > 0) && (line.at(0) != '#')) {
-                modName = QString::fromUtf8(line.constData()).toLower();
-            }
+  const QString path = gameDirectory().filePath("Skyrim.ccc");
 
-            if (modName.size() > 0) {
-                if (!plugins.contains(modName, Qt::CaseInsensitive)) {
-                    plugins.append(modName);
-                }
-            }
-        }
+  MOBase::forEachLineInFile(path, [&](QString s) {
+    if (!pluginsLookup.contains(s)) {
+      pluginsLookup.insert(s);
+      plugins.append(std::move(s));
     }
-    return plugins;
+  });
+
+  return plugins;
 }
 
 IPluginGame::LoadOrderMechanism GameSkyrimSE::loadOrderMechanism() const
