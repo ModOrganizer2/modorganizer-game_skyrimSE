@@ -71,7 +71,7 @@ bool GameSkyrimSE::init(IOrganizer *moInfo)
 
     registerFeature<ScriptExtender>(new SkyrimSEScriptExtender(this));
     registerFeature<DataArchives>(new SkyrimSEDataArchives(myGamesPath()));
-    registerFeature<LocalSavegames>(new GamebryoLocalSavegames(myGamesPath(), "Skyrim.ini"));
+    registerFeature<LocalSavegames>(new GamebryoLocalSavegames(myGamesPath(), "Skyrimcustom.ini"));
     registerFeature<SaveGameInfo>(new SkyrimSESaveGameInfo(this));
     registerFeature<GamePlugins>(new CreationGamePlugins(moInfo));
     registerFeature<UnmanagedMods>(new SkyrimSEUnmangedMods(this));
@@ -124,7 +124,7 @@ QString GameSkyrimSE::description() const
 
 MOBase::VersionInfo GameSkyrimSE::version() const
 {
-    return VersionInfo(1, 4, 1, VersionInfo::RELEASE_FINAL);
+    return VersionInfo(1, 5, 0, VersionInfo::RELEASE_FINAL);
 }
 
 bool GameSkyrimSE::isActive() const
