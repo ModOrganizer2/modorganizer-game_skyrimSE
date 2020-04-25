@@ -1,15 +1,8 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.16)
 
-ADD_COMPILE_OPTIONS($<$<CXX_COMPILER_ID:MSVC>:/MP> $<$<CXX_COMPILER_ID:MSVC>:$<$<CONFIG:RELEASE>:/O2>> $<$<CXX_COMPILER_ID:MSVC>:$<$<CONFIG:RELWITHDEBINFO>:/O2>>)
+project(game_skyrimse)
+set(project_type plugin)
+set(enable_warnings OFF)
 
-SET(PROJ_NAME game_skyrimse)
-
-PROJECT(${PROJ_NAME})
-
-SET(DEPENDENCIES_DIR CACHE PATH "")
-
-# hint to find qt in dependencies path
-LIST(APPEND CMAKE_PREFIX_PATH ${QT_ROOT}/lib/cmake)
-LIST(APPEND CMAKE_PREFIX_PATH ${LZ4_ROOT}/dll)
-
-ADD_SUBDIRECTORY(src)
+include(../cmake_common/project.cmake)
+add_subdirectory(src)
