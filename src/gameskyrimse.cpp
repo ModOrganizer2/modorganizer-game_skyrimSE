@@ -4,11 +4,11 @@
 #include "skyrimsescriptextender.h"
 #include "skyrimsesavegameinfo.h"
 #include "skyrimseunmanagedmods.h"
+#include "skyrimsemoddatachecker.h"
 
 #include <pluginsetting.h>
 #include <executableinfo.h>
 #include <gamebryolocalsavegames.h>
-#include <gamebryomoddatachecker.h>
 #include <creationgameplugins.h>
 #include "versioninfo.h"
 #include <utility.h>
@@ -73,7 +73,7 @@ bool GameSkyrimSE::init(IOrganizer *moInfo)
     registerFeature<ScriptExtender>(new SkyrimSEScriptExtender(this));
     registerFeature<DataArchives>(new SkyrimSEDataArchives(myGamesPath()));
     registerFeature<LocalSavegames>(new GamebryoLocalSavegames(myGamesPath(), "Skyrimcustom.ini"));
-    registerFeature<ModDataChecker>(new GamebryoModDataChecker(this));
+    registerFeature<ModDataChecker>(new SkyrimSEModDataChecker(this));
     registerFeature<SaveGameInfo>(new SkyrimSESaveGameInfo(this));
     registerFeature<GamePlugins>(new CreationGamePlugins(moInfo));
     registerFeature<UnmanagedMods>(new SkyrimSEUnmangedMods(this));
