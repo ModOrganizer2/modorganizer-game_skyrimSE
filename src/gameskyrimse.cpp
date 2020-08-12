@@ -230,8 +230,9 @@ QStringList GameSkyrimSE::CCPlugins() const
   const QString path = gameDirectory().filePath("Skyrim.ccc");
 
   MOBase::forEachLineInFile(path, [&](QString s) {
-    if (!pluginsLookup.contains(s)) {
-      pluginsLookup.insert(s);
+    const auto lc = s.toLower();
+    if (!pluginsLookup.contains(lc)) {
+      pluginsLookup.insert(lc);
       plugins.append(std::move(s));
     }
   });
