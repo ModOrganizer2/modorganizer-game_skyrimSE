@@ -5,14 +5,14 @@ environment:
   WEBHOOK_URL:
     secure: gOKbXaZM9ImtMD5XrYITvdyZUW/az082G9OIN1EC1Vbg57wBaeLhi49uGjxPw5GVujHku6kxN6ab89zhbS5GVeluR76GM83IbKV4Sh7udXzoYZZdg6YudtYHzdhCgUeiedpswbuczTq9ceIkkfSEWZuh/lMAAVVwvcGsJAnoPFw=
 build_script:
-- ps: >-
-    git clone --depth=1 https://github.com/ModOrganizer2/modorganizer-umbrella.git c:\projects\modorganizer-umbrella 2> $null
+- pwsh: >-
+    git clone --depth=1 https://github.com/ModOrganizer2/modorganizer-umbrella.git c:\projects\modorganizer-umbrella
 
-    git checkout $(git show-ref --verify --quiet refs/remotes/origin/${env:APPVEYOR_REPO_BRANCH} || echo '-b') ${env:APPVEYOR_REPO_BRANCH}
-
-    mkdir c:\projects\modorganizer-build -type directory
+    New-Item -ItemType Directory -Path c:\projects\modorganizer-build
 
     cd c:\projects\modorganizer-umbrella
+
+    git checkout $(git show-ref --verify --quiet refs/remotes/origin/${env:APPVEYOR_REPO_BRANCH} || echo '-b') ${env:APPVEYOR_REPO_BRANCH}
 
     C:\Python37-x64\python.exe unimake.py -d c:\projects\modorganizer-build -s Appveyor_Build=True ${env:APPVEYOR_PROJECT_NAME}
 artifacts:
