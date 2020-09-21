@@ -6,7 +6,8 @@ environment:
     secure: gOKbXaZM9ImtMD5XrYITvdyZUW/az082G9OIN1EC1Vbg57wBaeLhi49uGjxPw5GVujHku6kxN6ab89zhbS5GVeluR76GM83IbKV4Sh7udXzoYZZdg6YudtYHzdhCgUeiedpswbuczTq9ceIkkfSEWZuh/lMAAVVwvcGsJAnoPFw=
 build_script:
 - cmd: >-
-    git clone --depth=1 --branch=%APPVEYOR_REPO_BRANCH% https://github.com/ModOrganizer2/modorganizer-umbrella.git c:\projects\modorganizer-umbrella 2> $null
+    git clone --depth=1 https://github.com/ModOrganizer2/modorganizer-umbrella.git c:\projects\modorganizer-umbrella 2> $null
+    git checkout $(git show-ref --verify --quiet refs/remotes/origin/%APPVEYOR_REPO_BRANCH% || echo '-b') %APPVEYOR_REPO_BRANCH%
 
     mkdir c:\projects\modorganizer-build -type directory
 
