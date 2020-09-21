@@ -6,7 +6,7 @@ environment:
     secure: gOKbXaZM9ImtMD5XrYITvdyZUW/az082G9OIN1EC1Vbg57wBaeLhi49uGjxPw5GVujHku6kxN6ab89zhbS5GVeluR76GM83IbKV4Sh7udXzoYZZdg6YudtYHzdhCgUeiedpswbuczTq9ceIkkfSEWZuh/lMAAVVwvcGsJAnoPFw=
 build_script:
 - pwsh: >-
-    git clone --depth=1 https://github.com/ModOrganizer2/modorganizer-umbrella.git c:\projects\modorganizer-umbrella
+    git clone --depth=1 --no-single-branch https://github.com/ModOrganizer2/modorganizer-umbrella.git c:\projects\modorganizer-umbrella
 
     New-Item -ItemType Directory -Path c:\projects\modorganizer-build
 
