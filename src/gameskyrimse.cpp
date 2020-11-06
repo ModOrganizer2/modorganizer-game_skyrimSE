@@ -68,9 +68,6 @@ bool GameSkyrimSE::init(IOrganizer *moInfo)
         return false;
     }
 
-    m_GamePath = GameSkyrimSE::identifyGamePath();
-    m_MyGamesPath = determineMyGamesPath(gameName());
-
     registerFeature<ScriptExtender>(new SkyrimSEScriptExtender(this));
     registerFeature<DataArchives>(new SkyrimSEDataArchives(myGamesPath()));
     registerFeature<LocalSavegames>(new GamebryoLocalSavegames(myGamesPath(), "Skyrimcustom.ini"));
