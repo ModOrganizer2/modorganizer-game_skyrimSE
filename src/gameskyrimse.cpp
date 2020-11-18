@@ -113,6 +113,11 @@ QString GameSkyrimSE::name() const
     return "Skyrim Special Edition Support Plugin";
 }
 
+QString GameSkyrimSE::localizedName() const
+{
+  return tr("Skyrim Special Edition Support Plugin");
+}
+
 QString GameSkyrimSE::author() const
 {
     return "Archost & ZachHaber";
@@ -126,11 +131,6 @@ QString GameSkyrimSE::description() const
 MOBase::VersionInfo GameSkyrimSE::version() const
 {
     return VersionInfo(1, 5, 0, VersionInfo::RELEASE_FINAL);
-}
-
-bool GameSkyrimSE::isActive() const
-{
-    return qApp->property("managed_game").value<IPluginGame*>() == this;
 }
 
 QList<PluginSetting> GameSkyrimSE::settings() const
