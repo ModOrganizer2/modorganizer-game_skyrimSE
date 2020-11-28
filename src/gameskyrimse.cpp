@@ -2,13 +2,14 @@
 
 #include "skyrimsedataarchives.h"
 #include "skyrimsescriptextender.h"
-#include "skyrimsesavegameinfo.h"
 #include "skyrimseunmanagedmods.h"
 #include "skyrimsemoddatachecker.h"
 #include "skyrimsemoddatacontent.h"
+#include "skyrimsesavegame.h"
 
 #include <pluginsetting.h>
 #include <executableinfo.h>
+#include <gamebryosavegameinfo.h>
 #include <gamebryolocalsavegames.h>
 #include <creationgameplugins.h>
 #include "versioninfo.h"
@@ -73,7 +74,7 @@ bool GameSkyrimSE::init(IOrganizer *moInfo)
     registerFeature<LocalSavegames>(new GamebryoLocalSavegames(myGamesPath(), "Skyrimcustom.ini"));
     registerFeature<ModDataChecker>(new SkyrimSEModDataChecker(this));
     registerFeature<ModDataContent>(new SkyrimSEModDataContent(this));
-    registerFeature<SaveGameInfo>(new SkyrimSESaveGameInfo(this));
+    registerFeature<SaveGameInfo>(new GamebryoSaveGameInfo(this));
     registerFeature<GamePlugins>(new CreationGamePlugins(moInfo));
     registerFeature<UnmanagedMods>(new SkyrimSEUnmangedMods(this));
 
@@ -167,6 +168,11 @@ QString GameSkyrimSE::savegameExtension() const
 QString GameSkyrimSE::savegameSEExtension() const
 {
     return "skse";
+}
+
+std::shared_ptr<const GamebryoSaveGame> GameSkyrimSE::makeSaveGame(QString filePath) const
+{
+  return std::make_shared<const SkyrimSESaveGame>(filePath, this);
 }
 
 QString GameSkyrimSE::steamAPPId() const
