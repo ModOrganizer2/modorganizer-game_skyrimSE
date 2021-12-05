@@ -95,7 +95,7 @@ QList<ExecutableInfo> GameSkyrimSE::executables() const
         << ExecutableInfo("Skyrim Special Edition", findInGameFolder(binaryName()))
         << ExecutableInfo("Skyrim Special Edition Launcher", findInGameFolder(getLauncherName()))
         << ExecutableInfo("Creation Kit", findInGameFolder("CreationKit.exe"))
-        << ExecutableInfo("LOOT", getLootPath()).withArgument("--game=\"Skyrim Special Edition\"")
+        << ExecutableInfo("LOOT", QFileInfo(getLootPath())).withArgument("--game=\"Skyrim Special Edition\"")
         ;
 }
 
