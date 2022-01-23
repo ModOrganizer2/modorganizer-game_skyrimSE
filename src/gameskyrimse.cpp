@@ -131,7 +131,7 @@ QString GameSkyrimSE::description() const
 
 MOBase::VersionInfo GameSkyrimSE::version() const
 {
-    return VersionInfo(1, 5, 0, VersionInfo::RELEASE_FINAL);
+    return VersionInfo(1, 6, 0, VersionInfo::RELEASE_FINAL);
 }
 
 QList<PluginSetting> GameSkyrimSE::settings() const
@@ -145,7 +145,6 @@ void GameSkyrimSE::initializeProfile(const QDir &path, ProfileSettings settings)
 {
     if (settings.testFlag(IPluginGame::MODS)) {
         copyToProfile(localAppFolder() + "/Skyrim Special Edition", path, "plugins.txt");
-        copyToProfile(localAppFolder() + "/Skyrim Special Edition", path, "loadorder.txt");
     }
 
     if (settings.testFlag(IPluginGame::CONFIGURATION)) {
@@ -282,4 +281,3 @@ MappingType GameSkyrimSE::mappings() const
 
     return result;
 }
-
