@@ -145,7 +145,6 @@ void GameSkyrimSE::initializeProfile(const QDir &path, ProfileSettings settings)
 {
     if (settings.testFlag(IPluginGame::MODS)) {
         copyToProfile(localAppFolder() + "/Skyrim Special Edition", path, "plugins.txt");
-        copyToProfile(localAppFolder() + "/Skyrim Special Edition", path, "loadorder.txt");
     }
 
     if (settings.testFlag(IPluginGame::CONFIGURATION)) {
@@ -282,4 +281,3 @@ MappingType GameSkyrimSE::mappings() const
 
     return result;
 }
-
