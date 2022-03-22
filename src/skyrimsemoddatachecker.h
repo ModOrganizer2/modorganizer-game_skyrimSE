@@ -15,7 +15,7 @@ protected:
       "sound", "strings", "textures", "trees", "video", "facegen", "materials",
       "skse", "distantlod", "asi", "Tools", "MCM", "distantland", "mits",
       "dllplugins", "CalienteTools", "NetScriptFramework", "shadersfx",
-      "Nemesis_Engine", "Platform"
+      "Nemesis_Engine", "Platform", "grass"
     };
     return result;
   }
