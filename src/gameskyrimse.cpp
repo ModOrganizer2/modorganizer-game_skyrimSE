@@ -28,13 +28,15 @@
 
 using namespace MOBase;
 
-GameSkyrimSE::GameSkyrimSE()
-{
-}
+GameSkyrimSE::GameSkyrimSE() {}
 
-void GameSkyrimSE::setGamePath(const QString &path)
+void GameSkyrimSE::checkGog()
 {
-    m_GamePath = path;
+    QFileInfo check_file(m_GamePath + "\\Galaxy64.dll");
+    if (check_file.exists())
+        m_IsGog = true;
+    else
+        m_IsGog = false;
 }
 
 QDir GameSkyrimSE::documentsDirectory() const
@@ -42,10 +44,37 @@ QDir GameSkyrimSE::documentsDirectory() const
     return m_MyGamesPath;
 }
 
+void GameSkyrimSE::detectGame()
+{
+    m_GamePath = identifyGamePath();
+    checkGog();
+    m_MyGamesPath = determineMyGamesPath(gameDirectoryName());
+}
+
 QString GameSkyrimSE::identifyGamePath() const
 {
-    QString path = "Software\\Bethesda Softworks\\" + gameName();
-    return findInRegistry(HKEY_LOCAL_MACHINE, path.toStdWString().c_str(), L"Installed Path");
+    QMap<QString, QString> paths = {
+        {"Software\\Bethesda Softworks\\" + gameName(), "Installed Path"},
+        {"Software\\GOG.com\\Games\\1162721350", "path"},
+        {"Software\\GOG.com\\Games\\1711230643", "path"},
+    };
+
+    QString result;
+    for (auto &path : paths.toStdMap()) {
+        result = findInRegistry(HKEY_LOCAL_MACHINE, path.first.toStdWString().c_str(), path.second.toStdWString().c_str());
+        if (!result.isEmpty())
+            break;
+    }
+    return result;
+}
+
+void GameSkyrimSE::setGamePath(const QString& path)
+{
+    m_GamePath = path;
+    checkGog();
+    m_MyGamesPath = determineMyGamesPath(gameDirectoryName());
+    registerFeature<DataArchives>(new SkyrimSEDataArchives(myGamesPath()));
+    registerFeature<LocalSavegames>(new GamebryoLocalSavegames(myGamesPath(), "Skyrimcustom.ini"));
 }
 
 QDir GameSkyrimSE::savesDirectory() const
@@ -81,11 +110,17 @@ bool GameSkyrimSE::init(IOrganizer *moInfo)
     return true;
 }
 
-
-
 QString GameSkyrimSE::gameName() const
 {
     return "Skyrim Special Edition";
+}
+
+QString GameSkyrimSE::gameDirectoryName() const
+{
+    if (m_IsGog)
+        return "Skyrim Special Edition GOG";
+    else
+        return "Skyrim Special Edition";
 }
 
 QList<ExecutableInfo> GameSkyrimSE::executables() const
@@ -275,7 +310,7 @@ MappingType GameSkyrimSE::mappings() const
 
     for (const QString &profileFile : { "plugins.txt", "loadorder.txt" }) {
         result.push_back({ m_Organizer->profilePath() + "/" + profileFile,
-            localAppFolder() + "/" + gameName() + "/" + profileFile,
+            localAppFolder() + "/" + gameDirectoryName() + "/" + profileFile,
             false });
     }
 
