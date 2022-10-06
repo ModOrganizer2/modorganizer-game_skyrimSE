@@ -73,6 +73,8 @@ void GameSkyrimSE::setGamePath(const QString& path)
     m_GamePath = path;
     checkGog();
     m_MyGamesPath = determineMyGamesPath(gameDirectoryName());
+    registerFeature<DataArchives>(new SkyrimSEDataArchives(myGamesPath()));
+    registerFeature<LocalSavegames>(new GamebryoLocalSavegames(myGamesPath(), "Skyrimcustom.ini"));
 }
 
 QDir GameSkyrimSE::savesDirectory() const
