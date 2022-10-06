@@ -21,6 +21,7 @@ public:
 
 public: // IPluginGame interface
 
+  virtual void detectGame() override;
   virtual QString gameName() const override;
 
   virtual QList<MOBase::ExecutableInfo> executables() const override;
@@ -60,12 +61,18 @@ protected:
   QString savegameExtension() const override;
   QString savegameSEExtension() const override;
 
+  QString gameDirectoryName() const;
   QDir documentsDirectory() const;
   QDir savesDirectory() const;
   QFileInfo findInGameFolder(const QString &relativePath) const;
   QString myGamesPath() const;
 
+  void checkGog();
+
   virtual QString identifyGamePath() const override;
+
+private:
+  bool m_IsGog = false;
 
 };
 
