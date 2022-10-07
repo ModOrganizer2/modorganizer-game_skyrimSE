@@ -32,16 +32,21 @@ using namespace MOBase;
 
 GameSkyrimSE::GameSkyrimSE() {}
 
+void GameSkyrimSE::setVariant(QString variant)
+{
+    m_GameVariant = variant;
+}
+
 void GameSkyrimSE::checkVariants()
 {
-    m_IsGog = false;
-    m_IsEpic = false;
     QFileInfo gog_dll(m_GamePath + "\\Galaxy64.dll");
     QFileInfo epic_dll(m_GamePath + "\\EOSSDK-Win64-Shipping.dll");
     if (gog_dll.exists())
-        m_IsGog = true;
+        setVariant("GOG");
     else if (epic_dll.exists())
-        m_IsEpic = true;
+        setVariant("Epic Games");
+    else
+        setVariant("Steam");
 }
 
 QDir GameSkyrimSE::documentsDirectory() const
@@ -104,7 +109,6 @@ QString GameSkyrimSE::identifyGamePath() const
                 }
             }
         }
-
     }
 
     return result;
@@ -159,9 +163,9 @@ QString GameSkyrimSE::gameName() const
 
 QString GameSkyrimSE::gameDirectoryName() const
 {
-    if (m_IsGog)
+    if (selectedVariant() == "GOG")
         return "Skyrim Special Edition GOG";
-    else if (m_IsEpic)
+    else if (selectedVariant() == "Epic Games")
         return "Skyrim Special Edition EPIC";
     else
         return "Skyrim Special Edition";
@@ -210,7 +214,7 @@ QString GameSkyrimSE::description() const
 
 MOBase::VersionInfo GameSkyrimSE::version() const
 {
-    return VersionInfo(1, 6, 0, VersionInfo::RELEASE_FINAL);
+    return VersionInfo(1, 7, 0, VersionInfo::RELEASE_CANDIDATE);
 }
 
 QList<PluginSetting> GameSkyrimSE::settings() const
@@ -223,7 +227,7 @@ QList<PluginSetting> GameSkyrimSE::settings() const
 void GameSkyrimSE::initializeProfile(const QDir &path, ProfileSettings settings) const
 {
     if (settings.testFlag(IPluginGame::MODS)) {
-        copyToProfile(localAppFolder() + "/Skyrim Special Edition", path, "plugins.txt");
+        copyToProfile(localAppFolder() + "/" + gameDirectoryName(), path, "plugins.txt");
     }
 
     if (settings.testFlag(IPluginGame::CONFIGURATION)) {
@@ -257,7 +261,9 @@ std::shared_ptr<const GamebryoSaveGame> GameSkyrimSE::makeSaveGame(QString fileP
 
 QString GameSkyrimSE::steamAPPId() const
 {
-    return "489830";
+    if (selectedVariant() == "Steam")
+        return "489830";
+    return QString();
 }
 
 QStringList GameSkyrimSE::primaryPlugins() const
@@ -277,7 +283,7 @@ QStringList GameSkyrimSE::primaryPlugins() const
 
 QStringList GameSkyrimSE::gameVariants() const
 {
-    return{ "Regular" };
+    return{ "Steam", "GOG", "Epic Games" };
 }
 
 QString GameSkyrimSE::gameShortName() const
