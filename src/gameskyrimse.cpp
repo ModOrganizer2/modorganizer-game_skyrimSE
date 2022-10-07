@@ -22,6 +22,8 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QDirIterator>
+#include <QJsonDocument>
 
 #include <memory>
 #include "scopeguard.h"
@@ -30,13 +32,16 @@ using namespace MOBase;
 
 GameSkyrimSE::GameSkyrimSE() {}
 
-void GameSkyrimSE::checkGog()
+void GameSkyrimSE::checkVariants()
 {
-    QFileInfo check_file(m_GamePath + "\\Galaxy64.dll");
-    if (check_file.exists())
+    m_IsGog = false;
+    m_IsEpic = false;
+    QFileInfo gog_dll(m_GamePath + "\\Galaxy64.dll");
+    QFileInfo epic_dll(m_GamePath + "\\EOSSDK-Win64-Shipping.dll");
+    if (gog_dll.exists())
         m_IsGog = true;
-    else
-        m_IsGog = false;
+    else if (epic_dll.exists())
+        m_IsEpic = true;
 }
 
 QDir GameSkyrimSE::documentsDirectory() const
@@ -47,7 +52,7 @@ QDir GameSkyrimSE::documentsDirectory() const
 void GameSkyrimSE::detectGame()
 {
     m_GamePath = identifyGamePath();
-    checkGog();
+    checkVariants();
     m_MyGamesPath = determineMyGamesPath(gameDirectoryName());
 }
 
@@ -65,13 +70,46 @@ QString GameSkyrimSE::identifyGamePath() const
         if (!result.isEmpty())
             break;
     }
+
+    // Check Epic Games Manifests
+    // AppName: ac82db5035584c7f8a2c548d98c86b2c
+    //      AE Update: 5d600e4f59974aeba0259c7734134e27 
+    if (result.isEmpty())
+    {
+        QString manifestDir(getKnownFolderPath(FOLDERID_ProgramData, false));
+        QDir epicManifests(manifestDir, "*.item", QDir::SortFlags(QDir::Name | QDir::IgnoreCase), QDir::Files);
+        if (epicManifests.exists()) {
+            QDirIterator it(epicManifests);
+            while (it.hasNext()) {
+                QString manifestFile = it.next();
+                QFile manifest(manifestFile);
+
+                if (!manifest.open(QIODevice::ReadOnly)) {
+                    qWarning("Couldn't open manifest file.");
+                    continue;
+                }
+
+                QByteArray manifestData = manifest.readAll();
+
+                QJsonDocument manifestJson(QJsonDocument::fromJson(manifestData));
+
+                if (manifestJson["AppName"] == "ac82db5035584c7f8a2c548d98c86b2c" ||
+                    manifestJson["AppName"] == "5d600e4f59974aeba0259c7734134e27") {
+                    result = manifestJson["InstallLocation"].toString();
+                    break;
+                }
+            }
+        }
+
+    }
+
     return result;
 }
 
 void GameSkyrimSE::setGamePath(const QString& path)
 {
     m_GamePath = path;
-    checkGog();
+    checkVariants();
     m_MyGamesPath = determineMyGamesPath(gameDirectoryName());
     registerFeature<DataArchives>(new SkyrimSEDataArchives(myGamesPath()));
     registerFeature<LocalSavegames>(new GamebryoLocalSavegames(myGamesPath(), "Skyrimcustom.ini"));
@@ -119,6 +157,8 @@ QString GameSkyrimSE::gameDirectoryName() const
 {
     if (m_IsGog)
         return "Skyrim Special Edition GOG";
+    else if (m_IsEpic)
+        return "Skyrim Special Edition EPIC";
     else
         return "Skyrim Special Edition";
 }

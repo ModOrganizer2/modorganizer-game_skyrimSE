@@ -67,12 +67,13 @@ protected:
   QFileInfo findInGameFolder(const QString &relativePath) const;
   QString myGamesPath() const;
 
-  void checkGog();
+  void checkVariants();
 
   virtual QString identifyGamePath() const override;
 
 private:
   bool m_IsGog = false;
+  bool m_IsEpic = false;
 
 };
 
