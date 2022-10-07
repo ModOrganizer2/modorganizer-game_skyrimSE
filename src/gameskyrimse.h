@@ -68,12 +68,9 @@ protected:
   QString myGamesPath() const;
 
   void checkVariants();
+  void setVariant(QString variant);
 
   virtual QString identifyGamePath() const override;
-
-private:
-  bool m_IsGog = false;
-  bool m_IsEpic = false;
 
 };
 
