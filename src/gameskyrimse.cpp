@@ -204,7 +204,7 @@ QString GameSkyrimSE::localizedName() const
 
 QString GameSkyrimSE::author() const
 {
-    return "Archost & ZachHaber";
+    return "MO2 Team, Orig: Archost & ZachHaber";
 }
 
 QString GameSkyrimSE::description() const
@@ -214,7 +214,7 @@ QString GameSkyrimSE::description() const
 
 MOBase::VersionInfo GameSkyrimSE::version() const
 {
-    return VersionInfo(1, 7, 0, VersionInfo::RELEASE_CANDIDATE);
+    return VersionInfo(1, 7, 0, VersionInfo::RELEASE_FINAL);
 }
 
 QList<PluginSetting> GameSkyrimSE::settings() const
