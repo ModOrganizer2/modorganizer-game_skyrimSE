@@ -178,8 +178,7 @@ QList<ExecutableInfo> GameSkyrimSE::executables() const
         << ExecutableInfo("Skyrim Special Edition", findInGameFolder(binaryName()))
         << ExecutableInfo("Skyrim Special Edition Launcher", findInGameFolder(getLauncherName()))
         << ExecutableInfo("Creation Kit", findInGameFolder("CreationKit.exe")).withSteamAppId("1946180")
-        << ExecutableInfo("LOOT", QFileInfo(getLootPath())).withArgument("--game=\"Skyrim Special Edition\"")
-        ;
+        << ExecutableInfo("LOOT", QFileInfo(getLootPath())).withArgument("--game=\"Skyrim Special Edition\"");
 }
 
 QList<ExecutableForcedLoadSetting> GameSkyrimSE::executableForcedLoads() const
