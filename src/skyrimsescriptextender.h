@@ -8,11 +8,10 @@ class GameGamebryo;
 class SkyrimSEScriptExtender : public GamebryoScriptExtender
 {
 public:
-  SkyrimSEScriptExtender(GameGamebryo const *game);
+  SkyrimSEScriptExtender(GameGamebryo const* game);
 
   virtual QString BinaryName() const override;
   virtual QString PluginPath() const override;
-
 };
 
-#endif // _SKYRIMSESCRIPTEXTENDER_H
+#endif  // _SKYRIMSESCRIPTEXTENDER_H
