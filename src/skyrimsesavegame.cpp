@@ -88,15 +88,15 @@ std::unique_ptr<GamebryoSaveGame::DataFields> SkyrimSESaveGame::fetchDataFields(
   // compatibility between LE and SE:
   //  SE has an additional uin16_t for compression
   //  SE uses an alpha channel, whereas LE does not
+  uint16_t compressionType = 0;
   if (version == 12) {
-    uint16_t compressionType;
     file.read(compressionType);
-    file.setCompressionType(compressionType);
     alpha = true;
   }
 
   fields->Screenshot = file.readImage(width, height, 320, alpha);
 
+  file.setCompressionType(compressionType);
   file.openCompressedData();
 
   uint8_t saveGameVersion = file.readChar();
