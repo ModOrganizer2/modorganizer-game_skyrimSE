@@ -81,8 +81,39 @@ QString GameSkyrimSE::identifyGamePath() const
   // AppName: ac82db5035584c7f8a2c548d98c86b2c
   //      AE Update: 5d600e4f59974aeba0259c7734134e27
   if (result.isEmpty()) {
-    result = parseEpicGamesLocation(
-        {"ac82db5035584c7f8a2c548d98c86b2c", "5d600e4f59974aeba0259c7734134e27"});
+    // Use the registry entry to find the EGL Data dir first, just in case something
+    // changes
+    QString manifestDir = findInRegistry(
+        HKEY_LOCAL_MACHINE, L"SOFTWARE\\WOW6432Node\\Epic Games\\EpicGamesLauncher",
+        L"AppDataPath");
+    if (manifestDir.isEmpty())
+      manifestDir = getKnownFolderPath(FOLDERID_ProgramData, false) +
+                    "\\Epic\\EpicGamesLauncher\\Data\\";
+    manifestDir += "Manifests";
+    QDir epicManifests(manifestDir, "*.item",
+                       QDir::SortFlags(QDir::Name | QDir::IgnoreCase), QDir::Files);
+    if (epicManifests.exists()) {
+      QDirIterator it(epicManifests);
+      while (it.hasNext()) {
+        QString manifestFile = it.next();
+        QFile manifest(manifestFile);
+
+        if (!manifest.open(QIODevice::ReadOnly)) {
+          qWarning("Couldn't open Epic Games manifest file.");
+          continue;
+        }
+
+        QByteArray manifestData = manifest.readAll();
+
+        QJsonDocument manifestJson(QJsonDocument::fromJson(manifestData));
+
+        if (manifestJson["AppName"] == "ac82db5035584c7f8a2c548d98c86b2c" ||
+            manifestJson["AppName"] == "5d600e4f59974aeba0259c7734134e27") {
+          result = manifestJson["InstallLocation"].toString();
+          break;
+        }
+      }
+    }
   }
 
   return result;
