@@ -193,7 +193,7 @@ QString GameSkyrimSE::description() const
 
 MOBase::VersionInfo GameSkyrimSE::version() const
 {
-  return VersionInfo(1, 7, 0, VersionInfo::RELEASE_FINAL);
+  return VersionInfo(1, 7, 1, VersionInfo::RELEASE_FINAL);
 }
 
 QList<PluginSetting> GameSkyrimSE::settings() const
