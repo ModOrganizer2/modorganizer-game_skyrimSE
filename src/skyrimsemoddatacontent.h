@@ -7,9 +7,6 @@
 class SkyrimSEModDataContent : public GamebryoModDataContent
 {
 public:
-  /**
-   *
-   */
   SkyrimSEModDataContent(GameGamebryo const* gamePlugin)
       : GamebryoModDataContent(gamePlugin)
   {

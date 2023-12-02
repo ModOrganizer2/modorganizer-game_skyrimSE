@@ -3,8 +3,7 @@
 #include <QString>
 #include <QStringList>
 
-SkyrimSEScriptExtender::SkyrimSEScriptExtender(GameGamebryo const* game)
-    : GamebryoScriptExtender(game)
+SkyrimSEScriptExtender::SkyrimSEScriptExtender(GameGamebryo const* game) : GamebryoScriptExtender(game)
 {}
 
 QString SkyrimSEScriptExtender::BinaryName() const

@@ -30,7 +30,9 @@
 
 using namespace MOBase;
 
-GameSkyrimSE::GameSkyrimSE() {}
+GameSkyrimSE::GameSkyrimSE()
+{
+}
 
 void GameSkyrimSE::setVariant(QString variant)
 {
@@ -71,15 +73,14 @@ QString GameSkyrimSE::identifyGamePath() const
 
   QString result;
   for (auto& path : paths.toStdMap()) {
-    result = findInRegistry(HKEY_LOCAL_MACHINE, path.first.toStdWString().c_str(),
-                            path.second.toStdWString().c_str());
+    result = findInRegistry(HKEY_LOCAL_MACHINE, path.first.toStdWString().c_str(), path.second.toStdWString().c_str());
     if (!result.isEmpty())
       break;
   }
 
   // Check Epic Games Manifests
   // AppName: ac82db5035584c7f8a2c548d98c86b2c
-  //      AE Update: 5d600e4f59974aeba0259c7734134e27
+  // AE Update: 5d600e4f59974aeba0259c7734134e27
   if (result.isEmpty()) {
     result = parseEpicGamesLocation(
         {"ac82db5035584c7f8a2c548d98c86b2c", "5d600e4f59974aeba0259c7734134e27"});
@@ -94,8 +95,7 @@ void GameSkyrimSE::setGamePath(const QString& path)
   checkVariants();
   m_MyGamesPath = determineMyGamesPath(gameDirectoryName());
   registerFeature<DataArchives>(new SkyrimSEDataArchives(myGamesPath()));
-  registerFeature<LocalSavegames>(
-      new GamebryoLocalSavegames(myGamesPath(), "Skyrimcustom.ini"));
+  registerFeature<LocalSavegames>(new GamebryoLocalSavegames(myGamesPath(), "SkyrimCustom.ini"));
 }
 
 QDir GameSkyrimSE::savesDirectory() const
@@ -121,8 +121,7 @@ bool GameSkyrimSE::init(IOrganizer* moInfo)
 
   registerFeature<ScriptExtender>(new SkyrimSEScriptExtender(this));
   registerFeature<DataArchives>(new SkyrimSEDataArchives(myGamesPath()));
-  registerFeature<LocalSavegames>(
-      new GamebryoLocalSavegames(myGamesPath(), "Skyrimcustom.ini"));
+  registerFeature<LocalSavegames>(new GamebryoLocalSavegames(myGamesPath(), "SkyrimCustom.ini"));
   registerFeature<ModDataChecker>(new SkyrimSEModDataChecker(this));
   registerFeature<ModDataContent>(new SkyrimSEModDataContent(this));
   registerFeature<SaveGameInfo>(new GamebryoSaveGameInfo(this));
@@ -150,15 +149,11 @@ QString GameSkyrimSE::gameDirectoryName() const
 QList<ExecutableInfo> GameSkyrimSE::executables() const
 {
   return QList<ExecutableInfo>()
-         << ExecutableInfo("SKSE",
-                           findInGameFolder(feature<ScriptExtender>()->loaderName()))
-         << ExecutableInfo("Skyrim Special Edition", findInGameFolder(binaryName()))
-         << ExecutableInfo("Skyrim Special Edition Launcher",
-                           findInGameFolder(getLauncherName()))
-         << ExecutableInfo("Creation Kit", findInGameFolder("CreationKit.exe"))
-                .withSteamAppId("1946180")
-         << ExecutableInfo("LOOT", QFileInfo(getLootPath()))
-                .withArgument("--game=\"Skyrim Special Edition\"");
+    << ExecutableInfo("SKSE", findInGameFolder(feature<ScriptExtender>()->loaderName()))
+    << ExecutableInfo("Skyrim Special Edition", findInGameFolder(binaryName()))
+    << ExecutableInfo("Skyrim Special Edition Launcher", findInGameFolder(getLauncherName()))
+    << ExecutableInfo("Creation Kit", findInGameFolder("CreationKit.exe")).withSteamAppId("1946180")
+    << ExecutableInfo("LOOT", QFileInfo(getLootPath())).withArgument("--game=\"Skyrim Special Edition\"");
 }
 
 QList<ExecutableForcedLoadSetting> GameSkyrimSE::executableForcedLoads() const
@@ -193,13 +188,12 @@ QString GameSkyrimSE::description() const
 
 MOBase::VersionInfo GameSkyrimSE::version() const
 {
-  return VersionInfo(1, 7, 1, VersionInfo::RELEASE_FINAL);
+  return VersionInfo(1, 7, 2, VersionInfo::RELEASE_FINAL);
 }
 
 QList<PluginSetting> GameSkyrimSE::settings() const
 {
-  return {PluginSetting("enderal_downloads", "allow Enderal and Enderal SE downloads",
-                        QVariant(false))};
+  return {PluginSetting("enderal_downloads", "Allow Enderal and Enderal SE downloads", QVariant(false))};
 }
 
 void GameSkyrimSE::initializeProfile(const QDir& path, ProfileSettings settings) const
@@ -209,16 +203,15 @@ void GameSkyrimSE::initializeProfile(const QDir& path, ProfileSettings settings)
   }
 
   if (settings.testFlag(IPluginGame::CONFIGURATION)) {
-    if (settings.testFlag(IPluginGame::PREFER_DEFAULTS) ||
-        !QFileInfo(myGamesPath() + "/skyrim.ini").exists()) {
-      copyToProfile(gameDirectory().absolutePath(), path, "skyrim_default.ini",
-                    "skyrim.ini");
-    } else {
-      copyToProfile(myGamesPath(), path, "skyrim.ini");
+    if (settings.testFlag(IPluginGame::PREFER_DEFAULTS) || !QFileInfo(myGamesPath() + "/Skyrim.ini").exists()) {
+      copyToProfile(gameDirectory().absolutePath(), path, "Skyrim_Default.ini", "Skyrim.ini");
+    }
+    else {
+      copyToProfile(myGamesPath(), path, "Skyrim.ini");
     }
 
-    copyToProfile(myGamesPath(), path, "skyrimprefs.ini");
-    copyToProfile(myGamesPath(), path, "skyrimcustom.ini");
+    copyToProfile(myGamesPath(), path, "SkyrimPrefs.ini");
+    copyToProfile(myGamesPath(), path, "SkyrimCustom.ini");
   }
 }
 
@@ -247,8 +240,13 @@ QString GameSkyrimSE::steamAPPId() const
 
 QStringList GameSkyrimSE::primaryPlugins() const
 {
-  QStringList plugins = {"skyrim.esm", "update.esm", "dawnguard.esm", "hearthfires.esm",
-                         "dragonborn.esm"};
+  QStringList plugins = {
+    "skyrim.esm",
+    "update.esm",
+    "dawnguard.esm",
+    "hearthfires.esm",
+    "dragonborn.esm"
+  };
 
   plugins.append(CCPlugins());
 
@@ -281,12 +279,16 @@ QString GameSkyrimSE::gameNexusName() const
 
 QStringList GameSkyrimSE::iniFiles() const
 {
-  return {"skyrim.ini", "skyrimprefs.ini", "skyrimcustom.ini"};
+  return {"Skyrim.ini", "SkyrimPrefs.ini", "SkyrimCustom.ini"};
 }
 
 QStringList GameSkyrimSE::DLCPlugins() const
 {
-  return {"dawnguard.esm", "hearthfires.esm", "dragonborn.esm"};
+  return {
+    "dawnguard.esm",
+    "hearthfires.esm",
+    "dragonborn.esm"
+  };
 }
 
 QStringList GameSkyrimSE::CCPlugins() const
@@ -314,12 +316,12 @@ IPluginGame::LoadOrderMechanism GameSkyrimSE::loadOrderMechanism() const
 
 int GameSkyrimSE::nexusModOrganizerID() const
 {
-  return 6194;  //... Should be 0?
+  return 6194;
 }
 
 int GameSkyrimSE::nexusGameID() const
 {
-  return 1704;  // 1704
+  return 1704;
 }
 
 QDir GameSkyrimSE::gameDirectory() const
@@ -333,9 +335,7 @@ MappingType GameSkyrimSE::mappings() const
   MappingType result;
 
   for (const QString& profileFile : {"plugins.txt", "loadorder.txt"}) {
-    result.push_back({m_Organizer->profilePath() + "/" + profileFile,
-                      localAppFolder() + "/" + gameDirectoryName() + "/" + profileFile,
-                      false});
+    result.push_back({m_Organizer->profilePath() + "/" + profileFile, localAppFolder() + "/" + gameDirectoryName() + "/" + profileFile, false});
   }
 
   return result;
