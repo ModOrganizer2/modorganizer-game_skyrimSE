@@ -266,7 +266,7 @@ QString GameSkyrimSE::gameShortName() const
 
 QStringList GameSkyrimSE::validShortNames() const
 {
-  QStringList shortNames{"Skyrim"};
+  QStringList shortNames{"Skyrim", "Enderal", "EnderalSE"};
   return shortNames;
 }
 
