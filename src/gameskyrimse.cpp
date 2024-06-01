@@ -93,9 +93,10 @@ void GameSkyrimSE::setGamePath(const QString& path)
   m_GamePath = path;
   checkVariants();
   m_MyGamesPath = determineMyGamesPath(gameDirectoryName());
-  registerFeature<DataArchives>(new SkyrimSEDataArchives(myGamesPath()));
-  registerFeature<LocalSavegames>(
-      new GamebryoLocalSavegames(myGamesPath(), "Skyrimcustom.ini"));
+
+  registerFeature(std::make_shared<SkyrimSEDataArchives>(myGamesPath()));
+  registerFeature(
+      std::make_shared<GamebryoLocalSavegames>(myGamesPath(), "Skyrimcustom.ini"));
 }
 
 QDir GameSkyrimSE::savesDirectory() const
@@ -119,15 +120,17 @@ bool GameSkyrimSE::init(IOrganizer* moInfo)
     return false;
   }
 
-  registerFeature<ScriptExtender>(new SkyrimSEScriptExtender(this));
-  registerFeature<DataArchives>(new SkyrimSEDataArchives(myGamesPath()));
-  registerFeature<LocalSavegames>(
-      new GamebryoLocalSavegames(myGamesPath(), "Skyrimcustom.ini"));
-  registerFeature<ModDataChecker>(new SkyrimSEModDataChecker(this));
-  registerFeature<ModDataContent>(new SkyrimSEModDataContent(this));
-  registerFeature<SaveGameInfo>(new GamebryoSaveGameInfo(this));
-  registerFeature<GamePlugins>(new CreationGamePlugins(moInfo));
-  registerFeature<UnmanagedMods>(new SkyrimSEUnmangedMods(this));
+  registerFeature(std::make_shared<SkyrimSEDataArchives>(myGamesPath()));
+  registerFeature(std::make_shared<SkyrimSEScriptExtender>(this));
+  registerFeature(std::make_shared<SkyrimSEDataArchives>(myGamesPath()));
+  registerFeature(
+      std::make_shared<GamebryoLocalSavegames>(myGamesPath(), "Skyrimcustom.ini"));
+  registerFeature(std::make_shared<SkyrimSEModDataChecker>(this));
+  registerFeature(
+      std::make_shared<SkyrimSEModDataContent>(m_Organizer->gameFeatures()));
+  registerFeature(std::make_shared<GamebryoSaveGameInfo>(this));
+  registerFeature(std::make_shared<CreationGamePlugins>(moInfo));
+  registerFeature(std::make_shared<SkyrimSEUnmangedMods>(this));
 
   return true;
 }
@@ -151,7 +154,9 @@ QList<ExecutableInfo> GameSkyrimSE::executables() const
 {
   return QList<ExecutableInfo>()
          << ExecutableInfo("SKSE",
-                           findInGameFolder(feature<ScriptExtender>()->loaderName()))
+                           findInGameFolder(m_Organizer->gameFeatures()
+                                                ->gameFeature<MOBase::ScriptExtender>()
+                                                ->loaderName()))
          << ExecutableInfo("Skyrim Special Edition", findInGameFolder(binaryName()))
          << ExecutableInfo("Skyrim Special Edition Launcher",
                            findInGameFolder(getLauncherName()))
