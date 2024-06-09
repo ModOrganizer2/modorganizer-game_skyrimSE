@@ -13,5 +13,5 @@ jobs:
       - name: Build Skyrim SE Plugin
         uses: ModOrganizer2/build-with-mob-action@master
         with:
-          mo2-third-parties: fmt gtest spdlog boost lz4
+          mo2-third-parties: gtest spdlog boost lz4
           mo2-dependencies: cmake_common uibase game_gamebryo
