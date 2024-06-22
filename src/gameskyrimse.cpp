@@ -93,10 +93,6 @@ void GameSkyrimSE::setGamePath(const QString& path)
   m_GamePath = path;
   checkVariants();
   m_MyGamesPath = determineMyGamesPath(gameDirectoryName());
-
-  registerFeature(std::make_shared<SkyrimSEDataArchives>(myGamesPath()));
-  registerFeature(
-      std::make_shared<GamebryoLocalSavegames>(myGamesPath(), "Skyrimcustom.ini"));
 }
 
 QDir GameSkyrimSE::savesDirectory() const
@@ -120,11 +116,9 @@ bool GameSkyrimSE::init(IOrganizer* moInfo)
     return false;
   }
 
-  registerFeature(std::make_shared<SkyrimSEDataArchives>(myGamesPath()));
   registerFeature(std::make_shared<SkyrimSEScriptExtender>(this));
-  registerFeature(std::make_shared<SkyrimSEDataArchives>(myGamesPath()));
-  registerFeature(
-      std::make_shared<GamebryoLocalSavegames>(myGamesPath(), "Skyrimcustom.ini"));
+  registerFeature(std::make_shared<SkyrimSEDataArchives>(this));
+  registerFeature(std::make_shared<GamebryoLocalSavegames>(this, "Skyrimcustom.ini"));
   registerFeature(std::make_shared<SkyrimSEModDataChecker>(this));
   registerFeature(
       std::make_shared<SkyrimSEModDataContent>(m_Organizer->gameFeatures()));

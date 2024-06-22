@@ -3,10 +3,6 @@
 #include "iprofile.h"
 #include <utility.h>
 
-SkyrimSEDataArchives::SkyrimSEDataArchives(const QDir& myGamesDir)
-    : GamebryoDataArchives(myGamesDir)
-{}
-
 QStringList SkyrimSEDataArchives::vanillaArchives() const
 {
   return {"Skyrim - Textures0.bsa", "Skyrim - Textures1.bsa", "Skyrim - Textures2.bsa",
@@ -23,7 +19,7 @@ QStringList SkyrimSEDataArchives::archives(const MOBase::IProfile* profile) cons
 
   QString iniFile = profile->localSettingsEnabled()
                         ? QDir(profile->absolutePath()).absoluteFilePath("skyrim.ini")
-                        : m_LocalGameDir.absoluteFilePath("skyrim.ini");
+                        : localGameDirectory().absoluteFilePath("skyrim.ini");
   result.append(getArchivesFromKey(iniFile, "SResourceArchiveList"));
   result.append(getArchivesFromKey(iniFile, "SResourceArchiveList2"));
 
@@ -37,7 +33,7 @@ void SkyrimSEDataArchives::writeArchiveList(MOBase::IProfile* profile,
 
   QString iniFile = profile->localSettingsEnabled()
                         ? QDir(profile->absolutePath()).absoluteFilePath("skyrim.ini")
-                        : m_LocalGameDir.absoluteFilePath("skyrim.ini");
+                        : localGameDirectory().absoluteFilePath("skyrim.ini");
   if (list.length() > 255) {
     int splitIdx = list.lastIndexOf(",", 256);
     setArchivesToKey(iniFile, "SResourceArchiveList", list.mid(0, splitIdx));

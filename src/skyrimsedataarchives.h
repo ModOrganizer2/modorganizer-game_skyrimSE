@@ -12,11 +12,8 @@ class IProfile;
 
 class SkyrimSEDataArchives : public GamebryoDataArchives
 {
+  using GamebryoDataArchives::GamebryoDataArchives;
 
-public:
-  SkyrimSEDataArchives(const QDir& myGamesDir);
-
-public:
   virtual QStringList vanillaArchives() const override;
   virtual QStringList archives(const MOBase::IProfile* profile) const override;
 
