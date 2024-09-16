@@ -18,7 +18,8 @@ protected:
         "facegen",   "materials",      "skse",          "distantlod",
         "asi",       "Tools",          "MCM",           "distantland",
         "mits",      "dllplugins",     "CalienteTools", "NetScriptFramework",
-        "shadersfx", "Nemesis_Engine", "Platform",      "grass"};
+        "shadersfx", "Nemesis_Engine", "Platform",      "grass",
+        "mainmenuwallpapers"};
     return result;
   }
   virtual const FileNameSet& possibleFileExtensions() const override
